@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Policy Portal{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  {% load static %}
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+  <link href="{% static 'css/site.css' %}" rel="stylesheet">
+</head>
+<body>
+  <div class="disclaimer py-2 text-center px-3">
+    Independent portal, not run by the government. Summaries are simplified. Always check the official page before applying.
+  </div>
+  <nav class="navbar navbar-expand-md site-nav">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="{% url 'policies:home' %}">Policy Portal</a>
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'policies:list' %}">All policies</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'policies:how_sentiment' %}">How sentiment works</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'policies:about' %}">About</a></li>
+          {% if user.is_staff %}<li class="nav-item"><a class="nav-link" href="{% url 'dashboard:overview' %}">Dashboard</a></li>{% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    {% if messages %}{% for m in messages %}
+      <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %}" role="alert">{{ m }}</div>
+    {% endfor %}{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="py-4 mt-5 border-top">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+      <div class="text-muted small">Policy Portal, Team 12. Policy information is taken from official sources and may change.</div>
+      <ul class="nav">
+        <li class="nav-item"><a class="nav-link px-2 text-muted small" href="{% url 'policies:about' %}">About</a></li>
+        <li class="nav-item"><a class="nav-link px-2 text-muted small" href="{% url 'policies:how_sentiment' %}">How Sentiment Works</a></li>
+        <li class="nav-item"><a class="nav-link px-2 text-muted small" href="{% url 'policies:disclaimer' %}">Disclaimer</a></li>
+      </ul>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

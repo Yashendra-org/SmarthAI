@@ -1,0 +1,28 @@
+:root {
+  --ink: #16324f;
+  --paper: #f7f8fa;
+  --line: #d9dee5;
+  --accent: #0e7c7b;
+  --pos: #2e7d32;
+  --neg: #c62828;
+  --neu: #78818c;
+}
+body { background: var(--paper); color: #1d2733; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.6; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: var(--ink); }
+.site-nav { background: var(--ink); }
+.site-nav .navbar-brand, .site-nav .nav-link { color: #fff; }
+.site-nav .nav-link:hover { color: #bfe6e5; }
+.disclaimer { background: #fff7e0; border-bottom: 1px solid #f0dca0; font-size: .875rem; }
+.policy-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.25rem; height: 100%; }
+.policy-card a.stretched { text-decoration: none; color: inherit; }
+.policy-card h3 { font-size: 1.15rem; margin-bottom: .25rem; }
+.tag { display: inline-block; font-size: .8rem; border: 1px solid var(--line); border-radius: 999px; padding: .1rem .6rem; margin: 0 .25rem .25rem 0; background: #fff; color: #3a4654; text-decoration: none; }
+a.tag:hover { border-color: var(--accent); color: var(--accent); }
+.btn-apply { background: var(--accent); color: #fff; }
+.btn-apply:hover { background: #0a6362; color: #fff; }
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; }
+.verified { font-size: .85rem; color: #4b5663; }
+.legend-dot { display: inline-block; width: .75rem; height: .75rem; border-radius: 50%; margin-right: .35rem; }
+.hp { position: absolute; left: -9999px; }
+:focus-visible { outline: 3px solid #f2a900; outline-offset: 2px; }
+footer { border-top: 1px solid var(--line); font-size: .875rem; color: #4b5663; }
