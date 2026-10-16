@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}All policies | Policy Portal{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">All policies</h1>
+<form method="get" class="panel mb-4" role="search">
+  <div class="row g-2">
+    <div class="col-12 col-lg-2">
+      <label class="form-label" for="q">Search</label>
+      <input id="q" name="q" value="{{ q }}" class="form-control" placeholder="Search keywords">
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <label class="form-label" for="category">Topic</label>
+      <select id="category" name="category" class="form-select">
+        <option value="">All</option>
+        {% for v, l in categories %}<option value="{{ v }}" {% if v == category %}selected{% endif %}>{{ l }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <label class="form-label" for="department">Department</label>
+      <select id="department" name="department" class="form-select">
+        <option value="">All</option>
+        {% for d in departments %}<option value="{{ d.id }}" {% if d.id|stringformat:"s" == department %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <label class="form-label" for="level">Level</label>
+      <select id="level" name="level" class="form-select">
+        <option value="">All</option>
+        {% for v, l in levels %}<option value="{{ v }}" {% if v == level %}selected{% endif %}>{{ l }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <label class="form-label" for="state">State</label>
+      <select id="state" name="state" class="form-select">
+        <option value="">All States</option>
+        {% for s in states %}<option value="{{ s }}" {% if s == state %}selected{% endif %}>{{ s }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <label class="form-label" for="group">For</label>
+      <select id="group" name="group" class="form-select">
+        <option value="">Everyone</option>
+        {% for g in target_groups %}<option value="{{ g.slug }}" {% if g.slug == group %}selected{% endif %}>{{ g.name|title }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-apply">Apply filters</button>
+    <a class="btn btn-link" href="{% url 'policies:list' %}">Clear</a>
+  </div>
+</form>
+
+<p class="text-muted">{{ policies|length }} polic{{ policies|length|pluralize:"y,ies" }} found</p>
+<div class="row g-3">
+  {% for p in policies %}<div class="col-12 col-md-6 col-lg-4">{% include "policies/_card.html" %}</div>
+  {% empty %}<p>No policies match these filters. Try clearing a filter or searching a different word.</p>{% endfor %}
+</div>
+{% endblock %}

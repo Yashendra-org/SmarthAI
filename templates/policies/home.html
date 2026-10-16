@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mb-5">
+  <h1 class="display-6">Find the government policy that applies to you</h1>
+  <p class="lead">Plain-language summaries, a link to the official page, and what other citizens say about each policy.</p>
+  <form action="{% url 'policies:list' %}" method="get" class="row g-2" role="search">
+    <div class="col-12 col-md-9">
+      <label for="q" class="visually-hidden">Search policies</label>
+      <input id="q" name="q" class="form-control form-control-lg" placeholder="Search by name or need, for example farmer, health, scholarship">
+    </div>
+    <div class="col-12 col-md-3 d-grid"><button class="btn btn-apply btn-lg">Search policies</button></div>
+  </form>
+</section>
+
+<section class="mb-5">
+  <h2 class="h4">Browse by who you are</h2>
+  {% for g in target_groups %}
+    <a class="tag fs-6" href="{% url 'policies:list' %}?group={{ g.slug }}">{{ g.name|title }}</a>
+  {% empty %}<p class="text-muted">Groups will appear once policies are published.</p>{% endfor %}
+</section>
+
+<section class="mb-5">
+  <h2 class="h4">Browse by topic</h2>
+  {% for value, label in categories %}
+    <a class="tag fs-6" href="{% url 'policies:list' %}?category={{ value }}">{{ label }}</a>
+  {% endfor %}
+</section>
+
+<section>
+  <h2 class="h4">Recently added{% if total %} <span class="text-muted fs-6">({{ total }} published)</span>{% endif %}</h2>
+  <div class="row g-3">
+    {% for p in recent %}<div class="col-12 col-md-6 col-lg-4">{% include "policies/_card.html" %}</div>
+    {% empty %}<p class="text-muted">No policies are published yet. Add some from the admin panel.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}
