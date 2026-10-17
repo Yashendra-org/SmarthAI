@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ policy.title }} | Policy Portal{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb"><a href="{% url 'policies:list' %}">&larr; All policies</a></nav>
+<h1 class="mt-2">{{ policy.title }}</h1>
+<p class="verified">{{ policy.department }} &middot; {{ policy.get_level_display }}{% if policy.state %}, {{ policy.state }}{% endif %}{% if policy.launch_year %} &middot; Since {{ policy.launch_year }}{% endif %}</p>
+<div class="mb-3">{% for g in policy.target_groups.all %}<a class="tag" href="{% url 'policies:list' %}?group={{ g.slug }}">{{ g.name|title }}</a>{% endfor %}</div>
+
+{% if not policy.last_verified %}
+<div class="alert alert-warning" role="note">
+  <strong>Details are still being checked.</strong> This page shows only basic information. Please read the full and current rules on the official website before you act on anything here.
+</div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-12 col-lg-8">
+    {% if policy.summary_en %}<div class="panel mb-3"><h2 class="h5">In simple words</h2><p class="mb-0">{{ policy.summary_en|linebreaksbr }}</p></div>{% endif %}
+    {% if policy.summary_hi %}<div class="panel mb-3"><h2 class="h5">सरल शब्दों में (Hindi Summary)</h2><p class="mb-0">{{ policy.summary_hi|linebreaksbr }}</p></div>{% endif %}
+    {% if policy.eligibility %}<div class="panel mb-3"><h2 class="h5">Who can apply</h2><p class="mb-0">{{ policy.eligibility|linebreaksbr }}</p></div>{% endif %}
+    {% if policy.benefits %}<div class="panel mb-3"><h2 class="h5">What you get</h2><p class="mb-0">{{ policy.benefits|linebreaksbr }}</p></div>{% endif %}
+    {% if policy.document_list %}<div class="panel mb-3"><h2 class="h5">Documents needed</h2><ul class="mb-0">{% for d in policy.document_list %}<li>{{ d }}</li>{% endfor %}</ul></div>{% endif %}
+    {% if policy.how_to_apply %}<div class="panel mb-3"><h2 class="h5">How to apply</h2><p class="mb-0">{{ policy.how_to_apply|linebreaksbr }}</p></div>{% endif %}
+  </div>
+
+  <aside class="col-12 col-lg-4">
+    <div class="panel mb-3">
+      {% if policy.official_url %}
+        <a class="btn btn-apply w-100 mb-2" href="{% url 'policies:apply' policy.slug %}" rel="noopener">{% if policy.last_verified %}Apply on the official site{% else %}Visit the official website{% endif %}</a>
+      {% endif %}
+      <p class="verified mb-0">{% if policy.last_verified %}Last verified {{ policy.last_verified|date:"j M Y" }}.{% endif %} This is a simplified summary. The official page is the final authority.</p>
+    </div>
+
+    <div class="panel">
+      <h2 class="h5">How citizens found it</h2>
+      {% if summary.show_chart %}
+        <canvas id="sentimentChart" width="260" height="260" role="img" aria-label="Sentiment pie chart"
+                data-positive="{{ summary.counts.positive }}" data-negative="{{ summary.counts.negative }}" data-neutral="{{ summary.counts.neutral }}"></canvas>
+        <ul class="list-unstyled mt-3 mb-2">
+          <li><span class="legend-dot" style="background:var(--pos)"></span>Positive {{ summary.percent.positive }}%</li>
+          <li><span class="legend-dot" style="background:var(--neg)"></span>Negative {{ summary.percent.negative }}%</li>
+          <li><span class="legend-dot" style="background:var(--neu)"></span>Neutral {{ summary.percent.neutral }}%</li>
+        </ul>
+        <p class="verified mb-1">Based on {{ summary.total }} responses.</p>
+        <p class="verified mb-1">{{ summary.apply_clicks }} people clicked Apply. {{ summary.applied_percent }}% of respondents say they applied.</p>
+        <p class="verified mb-0">Counts are not official applicant numbers.</p>
+        {% if summary.has_sample_data %}<p class="badge text-bg-warning mt-2">Includes sample data for demo</p>{% endif %}
+      {% else %}
+        <p class="mb-1">Not enough responses yet to show a chart.</p>
+        <p class="verified mb-0">{{ summary.total }} of {{ summary.min_required }} needed. Be one of the first to share your experience.</p>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+
+{% include "feedback/_form.html" %}
+{% endblock %}
+
+{% block scripts %}
+{% if summary.show_chart %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% load static %}
+<script src="{% static 'js/sentiment_chart.js' %}"></script>
+{% endif %}
+{% endblock %}
