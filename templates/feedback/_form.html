@@ -1,0 +1,22 @@
+<section id="feedback" class="panel mt-4">
+  <h2 class="h4">Share your experience</h2>
+  <form method="post" action="{% url 'feedback:submit' policy.slug %}">
+    {% csrf_token %}
+    <div class="hp" aria-hidden="true"><label>Leave empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <fieldset class="mb-3">
+      <legend class="h6">Your rating (5 is best)</legend>
+      {% for radio in form.rating %}<label class="me-3">{{ radio.tag }} {{ radio.choice_label }}</label>{% endfor %}
+    </fieldset>
+    <div class="mb-3">
+      <label class="form-label" for="id_comment">Your comment (English or Hinglish)</label>
+      <textarea class="form-control" id="id_comment" name="comment" rows="4" maxlength="2000" required></textarea>
+    </div>
+    <div class="row g-3">
+      <div class="col-12 col-md-4"><label class="form-label" for="id_applied_status">Did you apply?</label>{{ form.applied_status }}</div>
+      <div class="col-6 col-md-4"><label class="form-label" for="id_region">State or region (optional)</label>{{ form.region }}</div>
+      <div class="col-6 col-md-4"><label class="form-label" for="id_age_group">Age group (optional)</label>{{ form.age_group }}</div>
+    </div>
+    <p class="verified mt-3">No account or name needed. Please do not include personal details in your comment.</p>
+    <button class="btn btn-apply">Send feedback</button>
+  </form>
+</section>
