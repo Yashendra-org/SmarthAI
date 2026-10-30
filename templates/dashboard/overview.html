@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Policy Portal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Dashboard</h1>
+  <a href="{% url 'dashboard:export_csv' %}" class="btn btn-sm btn-outline-primary">📥 Export Feedback CSV</a>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="panel"><div class="h3 mb-0">{{ totals.published }}/{{ totals.policies }}</div>Published policies</div></div>
+  <div class="col-6 col-md-3"><div class="panel"><div class="h3 mb-0">{{ totals.feedback }}</div>Feedback received</div></div>
+  <div class="col-6 col-md-3"><div class="panel"><div class="h3 mb-0">{{ totals.flagged }}</div>Flagged as spam</div></div>
+  <div class="col-6 col-md-3"><div class="panel"><canvas id="overall" height="120"></canvas></div></div>
+</div>
+
+<div class="panel mb-4 table-responsive">
+  <h2 class="h5">By policy</h2>
+  <table class="table align-middle">
+    <thead><tr><th>Policy</th><th>Status</th><th>Responses</th><th>Positive</th><th>Negative</th><th>Neutral</th><th>Avg rating</th><th>Apply clicks</th></tr></thead>
+    <tbody>
+    {% for p in rows %}
+      <tr><td><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></td><td>{{ p.get_status_display }}</td><td>{{ p.n }}</td>
+          <td>{{ p.pos }}</td><td>{{ p.neg }}</td><td>{{ p.neu }}</td><td>{{ p.avg_rating|default_if_none:"-"|floatformat:1 }}</td><td>{{ p.apply_clicks }}</td></tr>
+    {% empty %}<tr><td colspan="8">No policies yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel table-responsive">
+  <h2 class="h5">Recent comments</h2>
+  <table class="table">
+    <thead><tr><th>Policy</th><th>Comment</th><th>Sentiment</th><th>Confidence</th><th></th></tr></thead>
+    <tbody>
+    {% for f in recent %}
+      <tr><td>{{ f.policy.title }}</td><td>{{ f.comment|truncatechars:120 }}</td><td>{{ f.get_sentiment_display }}</td><td>{{ f.confidence|default_if_none:"-" }}</td>
+          <td>{% if f.is_sample %}<span class="badge text-bg-warning">sample</span>{% endif %}{% if f.is_flagged %}<span class="badge text-bg-danger">flagged</span>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="5">No feedback yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  <p class="verified mb-0">To flag spam or publish policies, use the admin panel at /admin/.</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+  new Chart(document.getElementById("overall"), {
+    type: "pie",
+    data: { labels: ["Positive", "Negative", "Neutral"],
+            datasets: [{ data: [{{ totals.positive }}, {{ totals.negative }}, {{ totals.neutral }}], backgroundColor: ["#2e7d32", "#c62828", "#78818c"] }] },
+    options: { plugins: { legend: { position: "right" } } }
+  });
+</script>
+{% endblock %}
