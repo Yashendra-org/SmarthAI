@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}How sentiment works | Policy Portal{% endblock %}
+{% block content %}
+<h1>How sentiment is calculated</h1>
+<p>Each comment is read by a computer program that labels it <strong>positive</strong>, <strong>negative</strong> or <strong>neutral</strong>, and gives a confidence score.</p>
+<ul>
+  <li>The program works on English and Hinglish (Hindi written in English letters).</li>
+  <li>It can be wrong, especially with sarcasm, very short comments and mixed languages.</li>
+  <li>Comments flagged as spam are left out of every chart.</li>
+  <li>A chart appears only after enough responses, so a few comments cannot misrepresent a policy.</li>
+  <li>Application numbers show clicks on the Apply button and what respondents tell us. They are not official applicant counts.</li>
+</ul>
+<p class="verified">Demo data is always labelled as sample data.</p>
+{% endblock %}
