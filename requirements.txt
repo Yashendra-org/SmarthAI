@@ -1,5 +1,30 @@
+# ==============================================================================
+# SmarthAI - Policy Portal: Project Dependencies
+# ==============================================================================
+
+# Core Django Web Framework
 Django>=5.0,<7.0
-python-dotenv>=1.0
+
+# Environment Configuration
+python-dotenv>=1.0.1
+
+# Production WSGI Application Server
 gunicorn>=22.0.0
+
+# High-Performance Production Static Files Serving & Brotli/Gzip Compression
 whitenoise>=6.6.0
+
+# Database URL Parser (Supports SQLite & PostgreSQL)
 dj-database-url>=2.1.0
+
+# PostgreSQL Database Adapter (Production / Cloud Database)
+psycopg2-binary>=2.9.9
+
+# Timezone Support
+tzdata>=2024.1
+
+# ------------------------------------------------------------------------------
+# Optional: Multilingual Deep Learning NLP Engine (Uncomment to enable)
+# transformers>=4.40.0
+# torch>=2.2.0
+# ------------------------------------------------------------------------------
