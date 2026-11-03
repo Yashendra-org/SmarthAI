@@ -12,3 +12,4 @@ python manage.py load_sample_feedback || true
 
 echo "==> Step 4: Starting Gunicorn WSGI server..."
 exec gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+
