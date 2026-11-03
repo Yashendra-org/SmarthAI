@@ -44,13 +44,18 @@ class Command(BaseCommand):
                         f"Row {n} ({title}): missing official_url or last_verified, saved as draft."))
                     status = "draft"
 
-                year = (row.get("launch_year") or "").strip()
+                year_raw = (row.get("launch_year") or "").strip()
+                try:
+                    year = int(float(year_raw)) if year_raw else None
+                except (ValueError, TypeError):
+                    year = None
+
                 defaults = {
                     "department": dept,
                     "category": (row.get("category") or "other").strip(),
                     "level": (row.get("level") or "central").strip(),
                     "state": (row.get("state") or "").strip(),
-                    "launch_year": int(year) if year.isdigit() else None,
+                    "launch_year": year,
                     "objective": (row.get("objective") or "").strip(),
                     "eligibility": (row.get("eligibility") or "").strip(),
                     "benefits": (row.get("benefits") or "").strip(),

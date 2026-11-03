@@ -130,6 +130,17 @@ class PublishAllTests(TestCase):
         call_command("load_policies", "--publish-all", stdout=StringIO())
         self.assertEqual(Policy.objects.filter(status="published").count(), Policy.objects.count())
         unverified = Policy.objects.filter(last_verified__isnull=True).first()
+        if not unverified:
+            dept, _ = Department.objects.get_or_create(name="Test Dept")
+            unverified = Policy.objects.create(
+                title="Unverified Test Policy",
+                department=dept,
+                category="other",
+                status="published",
+                official_url="https://example.gov.in",
+                last_verified=None,
+                summary_en="Summary for unverified policy",
+            )
         r = self.client.get(unverified.get_absolute_url())
         self.assertContains(r, "Details are still being checked")
         self.assertContains(r, "Visit the official website")
