@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}About | Policy Portal{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-9">
+    <h1 class="h2 mb-4">About Policy Portal</h1>
+    
+    <div class="panel mb-4">
+      <h2 class="h5">Our Mission</h2>
+      <p>
+        <strong>Policy Portal (Team 12)</strong> is an independent civic technology platform designed to bridge the gap between government policies and citizens. We believe public schemes should be accessible to everyone, written in clear, plain language, and supported by honest public feedback.
+      </p>
+    </div>
+
+    <div class="panel mb-4">
+      <h2 class="h5">The Problems We Address</h2>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h3 class="h6 fw-bold">1. Policies are Hard to Find & Understand</h3>
+          <p class="mb-0 text-muted">
+            Official schemes are often published as lengthy legal PDFs scattered across dozens of department websites. Citizens frequently miss out on critical benefits simply because they don't know the scheme exists or whether they qualify.
+          </p>
+        </div>
+        <div class="col-md-6">
+          <h3 class="h6 fw-bold">2. Public Opinion is Hard to Measure at Scale</h3>
+          <p class="mb-0 text-muted">
+            When thousands of citizens experience issues with an application or implementation, comments are buried across forums. Without automated aggregation, systemic problems stay hidden until they become crises.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel mb-4">
+      <h2 class="h5">How Policy Portal Works</h2>
+      <ol class="mb-0">
+        <li class="mb-2"><strong>Verified Policy Summaries:</strong> Our team researches official government sources, verifies eligibility criteria and document checklists, and writes concise summaries in simple English and Hindi.</li>
+        <li class="mb-2"><strong>Direct Official Links:</strong> We always link directly to the official government portal where applications are processed.</li>
+        <li class="mb-2"><strong>Citizen Feedback:</strong> Citizens can share ratings and honest experiences in English or Hinglish without requiring an account.</li>
+        <li><strong>AI Sentiment Analysis:</strong> Comments are analyzed by our natural language processing engines to display transparent public sentiment charts once a reliable sample size is reached.</li>
+      </ol>
+    </div>
+
+    <div class="panel">
+      <h2 class="h5">Privacy & Safety</h2>
+      <p class="mb-0 text-muted">
+        We do not collect names, phone numbers, or government IDs. Submissions are protected by rate limiting and cryptographic IP hashing to prevent spam and manipulation.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
