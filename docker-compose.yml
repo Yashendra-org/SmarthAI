@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: policy_portal_web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=production-secret-key-change-me-in-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - SENTIMENT_ENGINE=lexicon
+      - MIN_RESPONSES_FOR_CHART=10
+    volumes:
+      - app_data:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  app_data:
+
