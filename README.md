@@ -1,26 +1,25 @@
 <div align="center">
 
-# 🏛️ SmarthAI — Policy Portal
+# 🏛️ Smarth AI — National Policy Portal & Civic Tech Guide
 
-**Citizen-Centric Government Policy Discovery & Scaled Sentiment Intelligence**
+**Empowering 1.4 Billion Citizens with 1,868+ Central & State Welfare Schemes**
 
 [![Django Version](https://img.shields.io/badge/Django-5.0%20%7C%206.0-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Python Version](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/Python-3.12%20%7C%203.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Render Deploy](https://img.shields.io/badge/Render-Deploy%20Ready-46E3B7?logo=render&logoColor=black)](https://render.com)
-[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Total Schemes](https://img.shields.io/badge/Schemes%20Cataloged-1%2C868%2B-0e7c7b)](http://127.0.0.1:8000/schemes.html)
+[![AI Engine](https://img.shields.io/badge/AI%20Models-Groq%20Qwen%20%7C%20Gemini%202.5%20%7C%20Ollama-orange)](https://groq.com/)
 
 <p align="center">
   <a href="#-overview">Overview</a> •
   <a href="#-key-features">Key Features</a> •
+  <a href="#-national-schemes-coverage">Schemes Coverage</a> •
   <a href="#-system-architecture">Architecture</a> •
-  <a href="#-workflow">Workflow</a> •
-  <a href="#-project-structure">Project Structure</a> •
-  <a href="#-technology-stack">Tech Stack</a> •
-  <a href="#-installation--setup">Setup</a> •
-  <a href="#-deployment-guide">Deployment</a> •
-  <a href="#-api--view-routes">Routes</a> •
-  <a href="#-contributors">Contributors</a>
+  <a href="#-ai-simplification--chatbot">AI Assistant</a> •
+  <a href="#-automated-ingestion-pipeline">Auto-Ingestion</a> •
+  <a href="#-optimization--performance">Performance</a> •
+  <a href="#-frequently-asked-questions">10 FAQs</a> •
+  <a href="#-installation--setup">Setup</a>
 </p>
 
 </div>
@@ -29,69 +28,72 @@
 
 ## 📌 Overview
 
-**SmarthAI (Policy Portal)** is an independent, civic-technology platform designed to solve two fundamental problems in democratic governance and citizen welfare:
+**Smarth AI (Policy Portal)** is an independent, high-performance civic-technology platform built to solve India's policy information accessibility gap.
 
-1. **Policies are hard to find and understand** — Government schemes and draft policies are typically published as dense legal PDFs across hundreds of disjointed department websites. Everyday citizens often do not know a policy exists, cannot decipher the bureaucratic language, and cannot easily determine whether they or their families qualify.
-2. **Public opinion is difficult to measure at scale** — When thousands of citizens experience issues with a scheme, complaints are scattered across social media, local offices, and forums. Without automated aggregation, systemic flaws stay invisible until they escalate.
+While the Government of India and State Governments release thousands of welfare initiatives and subsidies every year, citizens struggle because:
+1. **Policies are scattered** across hundreds of different ministry and state portals.
+2. **Bureaucratic language is difficult to understand** for everyday citizens and students.
+3. **Application portals and KYC document requirements** are unclear.
 
 ### The Solution
 
-SmarthAI bridges this divide through a transparent, three-pillar system:
-
-- **Plain-Language Policy Catalog** — Verified central and state government schemes summarized in plain English and Hindi, with explicit eligibility criteria, required document checklists, and direct click-tracked links to official government application portals.
-- **Citizen Feedback Channel** — Frictionless citizen feedback mechanism requiring no account creation, collecting 1–5 star ratings, qualitative comments in English or Hinglish, and real application conversion status ("Applied", "Started", "Not Applied").
-- **Real-Time Sentiment Intelligence** — Dual-engine Natural Language Processing (NLP) pipeline (lexicon-based + multilingual transformer) that classifies public sentiment, calculates confidence scores, and visualizes live sentiment pie charts on policy pages once a representative threshold is reached.
+Smarth AI bridges this divide with:
+- **1,868+ Verified Schemes** cataloged across all Central Ministries and all 36 States & Union Territories.
+- **AI-Powered Simplification (Qwen 27B / Gemini 2.5 Flash / Ollama)** that distills legal gazettes into 2-line plain English and Hindi summaries, bulleted benefits, eligibility checklists, and direct links to official application portals.
+- **Interactive Civic Tools**: Live AI Voice/Chat Assistant, Side-by-side Scheme Comparison, Document Readiness Checklist, and Indicative Eligibility Calculator.
+- **Privacy-First Design**: Zero tracking of private KYC/Aadhaar/bank details; all user preference data is stored strictly in the citizen's own browser (`localStorage`).
+- **Patriotic 4-Second Loading Experience**: Elegant Indian National Flag opening screen with meaningful mission highlights.
 
 > [!NOTE]
-> **Independent Platform Notice**: SmarthAI is an independent portal built by Team 12. It is **not run by, affiliated with, or endorsed by the Government of India or any state government**. Application counts represent outbound link clicks and self-reported answers, not official government registries.
+> **Independent Platform Notice**: Smarth AI is an independent civic portal. It is **not operated by, affiliated with, or endorsed by the Government of India or any state government**. Citizens are always directed to official `.gov.in` and `.nic.in` portals to complete and submit applications.
 
 ---
 
 ## ✨ Key Features
 
-### 🔍 Policy Discovery & Verification
-| | Feature | Details |
-|---|---|---|
-| 🔎 | **Full-Text Multi-Field Search** | Real-time search across policy titles, objectives, benefits, eligibility, and bilingual summaries |
-| 🏷️ | **Multi-Criteria Filtering** | Filter policies simultaneously by **Topic**, **Department**, **Level** (Central / State), **State**, and **Target Group** |
-| 👥 | **"Browse by Who You Are"** | Segmented target group discovery (Farmers, Students, Women, Senior Citizens, Workers, Entrepreneurs, Minorities, etc.) |
-| 🌐 | **Bilingual Plain Language** | Parallel plain-English and Hindi summaries breaking down complex legal gazettes into digestible takeaways |
-| 🔒 | **Verification Pipeline** | Policies are kept in `Draft` status until official URLs and last-verified dates are confirmed by an administrator |
-| 🔗 | **Click-Tracked Official Redirect** | Outbound redirect engine that increments verified click counters before routing citizens directly to the government application page |
+### 🔍 Comprehensive Scheme Discovery
+- **1,868+ Schemes**: 439 Central Government schemes + 1,429 State schemes.
+- **State & UT Dropdown Filter**: Filter instantly by any of the 36 States & UTs (e.g. *Uttar Pradesh*, *Maharashtra*, *Rajasthan*, *Tamil Nadu*, *Kerala*, *Bihar*, *Delhi*, etc.).
+- **Category Filter**: Agriculture, Education & Skill, Health, Housing, Finance, Digital/IT, and Social Welfare.
+- **Segmented Audience Discovery**: Farmers, Students, Women & Girls, Senior Citizens, Workers & Artisans, Entrepreneurs, Differently Abled, and Tribal Communities.
+- **Pre-computed $O(1)$ Search**: Instant sub-millisecond search across scheme names, benefits, departments, and Hindi keywords.
 
-### 💬 Citizen Feedback & Application Insights
-| | Feature | Details |
-|---|---|---|
-| ⭐ | **Granular Ratings** | 1 to 5 star rating system for overall policy satisfaction |
-| 🗣️ | **Hinglish & English Submissions** | Accepts colloquial feedback in English, Hindi, and Hinglish (Hindi written in Roman characters) |
-| 📋 | **Self-Reported Application Status** | Captures whether the citizen *Applied*, *Started but did not finish*, or *Has not applied* |
-| 📍 | **Optional Demographics** | Optional region/state and age bracket selection to enable regional cohort analytics |
-| 📊 | **Public Sentiment Charts** | Dynamic Chart.js pie charts revealed after a minimum response threshold (default: 10 responses) |
-| 🏷️ | **Sample Data Labelling** | Any simulated or test data is transparently flagged with an `Includes sample data for demo` badge |
+### 🤖 Smarth AI Assistant (Bilingual Chatbot)
+- Multi-model routing:
+  - **Groq Cloud (Qwen 27B)** for ultra-fast, structured reasoning.
+  - **Local Ollama (`qwen3.5:2b` / `qwen2.5:2b`)** for offline / edge processing.
+  - **Google Gemini 2.5 Flash** as a high-reliability fallback.
+- **Voice Input & Speech Output**: Listen to scheme summaries or ask queries via voice recognition.
+- **Direct Link Extraction**: Identifies and embeds official `.gov.in` portal links directly into responses.
 
-### 🧠 Natural Language Processing & Sentiment Engines
-| | Feature | Details |
-|---|---|---|
-| ⚡ | **Lexicon Engine (Default)** | High-speed, zero-dependency rule engine with curated English and Hinglish sentiment dictionaries, negation handling, and phrase boosters |
-| 🤖 | **Transformer Engine** | Multilingual deep learning classification candidate for nuanced semantic understanding across mixed scripts |
-| 🔄 | **Pluggable Architecture** | Swappable engine architecture configured instantly via the `SENTIMENT_ENGINE` environment variable |
-| 📈 | **Benchmark Evaluator** | Built-in CLI command (`evaluate_sentiment`) to benchmark accuracy, precision, and recall on `hinglish_test_set.csv` |
+### ⚖️ Civic Tech Tools
+- **Scheme Comparison Tool (`compare.html`)**: Select up to 3 schemes side-by-side to compare benefits, eligibility, and documents.
+- **Document Readiness Checker (`checklist.html`)**: Interactive checkbox system calculating readiness percentages and generating printable PDFs.
+- **Indicative Eligibility Checker (`eligibility.html`)**: Match age, gender, occupation, and income against scheme criteria.
 
-### 🛡️ Trust, Safety & Anti-Spam
-| | Feature | Details |
-|---|---|---|
-| ⏳ | **Sliding-Window Rate Limiting** | Restricts feedback submissions to a maximum of 5 per hour per user |
-| 🔐 | **Cryptographic IP Hashing** | Raw IP addresses are never saved; they are salted and hashed via `SHA-256` for privacy preservation |
-| 🍯 | **Honeypot Bot Traps** | Invisible decoy form fields that silently catch and reject automated spam submissions |
-| 🚫 | **Automatic Flag Exclusion** | Flagged spam comments are immediately removed from sentiment chart calculations and aggregate metrics |
+---
 
-### 📊 Administrative Dashboard & Data Operations
-| | Feature | Details |
-|---|---|---|
-| 📈 | **Executive Summary Metrics** | Real-time KPI cards: Total published policies, total feedback volume, flagged spam count, and overall sentiment distribution |
-| 📑 | **Per-Policy Performance Breakdown** | Tabular overview per policy: Response count, sentiment splits (pos/neg/neu), average rating, and outbound apply clicks |
-| 📥 | **CSV Data Export** | One-click export of the entire moderated feedback dataset for external analytical tooling or departmental review |
-| 👮 | **Extensible Role-Based Access** | Django User model equipped with `role` choices (`Admin`, `Officer`, `Head`, `Citizen`) ready for multi-tier government approvals |
+## 🇮🇳 National Schemes Coverage
+
+```
+Total Active Schemes in Portal: 1,868
+├── Central Government Schemes: 439
+└── State Government Schemes: 1,429 (Across 36 States & UTs)
+```
+
+### Top States Represented
+- **Puducherry**: 145 schemes
+- **Tamil Nadu**: 138 schemes
+- **Haryana**: 89 schemes
+- **Goa**: 84 schemes
+- **Gujarat**: 82 schemes
+- **Madhya Pradesh**: 67 schemes
+- **Chhattisgarh**: 56 schemes
+- **Rajasthan**: 55 schemes
+- **Odisha**: 52 schemes
+- **Kerala**: 50 schemes
+- **West Bengal**: 48 schemes
+- *Maharashtra, Uttar Pradesh, Bihar, Karnataka, Punjab, Delhi, Assam, J&K, Uttarakhand, Himachal, and all others.*
 
 ---
 
@@ -99,405 +101,181 @@ SmarthAI bridges this divide through a transparent, three-pillar system:
 
 ```mermaid
 flowchart TD
-    subgraph Citizens["Public Citizen Interface"]
-        A[Citizen Browses Portal] --> B{Action}
-        B -->|Search & Filter| C[Policy Catalog]
-        B -->|Read Summary| D[Policy Detail View]
-        B -->|Apply| E["Outbound Click Redirect<br/>/policies/{slug}/apply/"]
-        B -->|Feedback| F[Feedback Submission Form]
-    end
+    A[Official Data Sources] --> B[Ingestion Pipeline]
+    A1[API Setu - myScheme] --> B
+    A2[data.gov.in OGD API] --> B
+    A3[PIB & Ministry Feeds] --> B
+    A4[National Scheme Catalog] --> B
 
-    E -->|Increment apply_clicks| G[(SQLite / Postgres DB)]
-    E -->|HTTP 302 Redirect| H["Official Government Portal<br/>(e.g., pmkisan.gov.in)"]
+    B --> C[AI Simplifier Engine]
+    C1[Groq Qwen 27B] --> C
+    C2[Local Ollama] --> C
+    C3[Gemini 2.5 Flash] --> C
 
-    F --> I{Validation & Security}
-    I -->|Honeypot Triggered| J[Reject Bot Spam]
-    I -->|Exceeds 5/hour| K[Rate Limit Block]
-    I -->|Valid Request| L["SHA-256 Salted Hash<br/>(ip_hash)"]
+    C --> D[(Django SQLite Database)]
+    D --> E[Auto-Sync static/js/data.js]
 
-    L --> M[Sentiment Router: get_engine]
-    M -->|SENTIMENT_ENGINE=lexicon| N[Rule-based Lexicon Engine]
-    M -->|SENTIMENT_ENGINE=transformer| O[Multilingual Transformer Engine]
+    D --> F[Django Backend API]
+    F --> F1[/api/chat/]
+    F --> F2[/api/schemes/sync/]
+    F --> F3[/api/schemes/<slug>/]
+    F --> F4[/api/schemes/<slug>/breakdown/]
+    F --> F5[/feedback/<slug>/api/submit/]
 
-    N --> P[SentimentResult: label + confidence]
-    O --> P
-
-    P --> Q[(Save Feedback Record)]
-    Q --> G
-
-    subgraph Analytics["Analytics & Dashboard"]
-        G --> R["Aggregation Engine<br/>sentiment_summary()"]
-        R -->|total >= min_responses| S[Public Sentiment Pie Chart]
-        R --> T[Staff Admin Dashboard]
-        T --> U[CSV Feedback Export]
-    end
+    E --> G[Modern Civic Frontend]
+    G --> G1[4s Flag Loading Splash]
+    G --> G2[Interactive Catalog & Search]
+    G --> G3[Clause Breakdown & Hidden Points]
+    G --> G4[4-Part Citizen Audit Form]
+    G --> G5[AI Voice/Chat Assistant]
+    G --> G6[Eligibility & Checklist Tools]
 ```
 
 ---
 
-## 🔄 Workflow
+## ⚖️ Deep Policy Breakdown & Hidden Points Inspector
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Citizen
-    participant Portal as Policy Portal Web
-    participant Sec as Security & Rate Limiter
-    participant NLP as Sentiment Engine
-    participant DB as Database (Scan & Store)
-    actor Admin as Staff / Admin
-
-    Citizen->>Portal: Search policies by need or target group
-    Portal-->>Citizen: Filtered policy cards with plain language summaries
-    Citizen->>Portal: Clicks "Apply on official site"
-    Portal->>DB: Increment policy.apply_clicks (+1)
-    Portal-->>Citizen: 302 Redirect to official .gov.in website
-
-    Citizen->>Portal: Submits feedback (Rating, English/Hinglish comment, Applied status)
-    Portal->>Sec: Check honeypot + sliding-window rate limit
-    Sec-->>Portal: Passed security checks
-    Portal->>NLP: analyze(comment)
-    NLP-->>Portal: SentimentResult (label, confidence score, model name)
-    Portal->>DB: Save Feedback with SHA-256 IP hash
-    Portal-->>Citizen: Feedback recorded alert
-
-    Admin->>Portal: Logs into /dashboard/
-    Portal->>DB: Query aggregated metrics (avg rating, sentiment %, clicks)
-    Portal-->>Admin: Executive dashboard view + "Export Feedback CSV" button
-```
+For every government policy, Smarth AI provides dual-layer comprehension:
+1. **Clause-by-Clause Gazette Comparison**:
+   - **📜 Official Gazette Clause**: Verbatim legal text as published by ministry notifications.
+   - **💡 Plain Words (सरल शब्दों में)**: Demystified everyday translation without bureaucratic jargon.
+   - **👤 Concrete Practical Example**: Real-life story illustrating on-ground application (e.g. small farmer Ramesh with 1.5 acres in Gorakhpur).
+2. **⚠️ Hidden Points & Fine Print (छिपी शर्तें और नियम)**:
+   - **NPCI DBT Server Mapping Trap**: Explains why normal bank account linking is insufficient without NPCI mapper flag.
+   - **Strict '1 Benefit Per Ration Card'**: Prevents dual-claim rejections.
+   - **6-Month Income Certificate Validity**: Highlights auto-rejection windows.
+   - **Post-Facto Reimbursement**: Clarifies upfront payment vs post-inspection subsidy credits.
 
 ---
 
-## 📂 Project Structure
+## 📝 4-Part Citizen Experience & Feedback Audit
 
-```
-SmarthAI/
-├── config/                          # Core project configuration
-│   ├── settings.py                  # Settings, WhiteNoise, DB switcher, CSRF
-│   ├── urls.py                      # Root URL router & favicon handler
-│   ├── wsgi.py                      # Production WSGI application
-│   └── __init__.py
-│
-├── accounts/                        # User authentication & role management
-│   ├── models.py                    # User model with Role choices (Admin/Officer/Head/Citizen)
-│   ├── admin.py                     # CustomUserAdmin with role filters & fieldsets
-│   ├── apps.py
-│   └── migrations/
-│
-├── policies/                        # Policy catalog & discovery
-│   ├── models.py                    # Department, TargetGroup, Policy models
-│   ├── views.py                     # home, list, detail, apply redirect, about, disclaimer
-│   ├── urls.py                      # Policy routing (/policies/, /about/, etc.)
-│   ├── admin.py                     # Admin policy verification & publication
-│   ├── management/commands/
-│   │   ├── load_policies.py         # Loads data/policies_seed.csv into database
-│   │   └── load_sample_feedback.py  # Generates test feedback for demo charts
-│   └── tests.py                     # Test suites (pages, filters, states, detail)
-│
-├── feedback/                        # Citizen feedback & abuse prevention
-│   ├── models.py                    # Feedback model (sentiment, rating, applied_status)
-│   ├── forms.py                     # FeedbackForm with bot honeypot validation
-│   ├── services.py                  # SHA-256 IP hashing & sliding-window rate limiting
-│   ├── views.py                     # submit_feedback POST handler
-│   ├── urls.py                      # Feedback endpoints
-│   ├── admin.py                     # Moderation & spam flagging
-│   └── migrations/
-│
-├── sentiment/                       # Natural Language Processing subsystem
-│   ├── base.py                      # BaseSentimentEngine interface & SentimentResult dataclass
-│   ├── lexicon_engine.py            # Rule-based English/Hinglish sentiment engine
-│   ├── transformer_engine.py        # Pretrained multilingual transformer engine
-│   ├── services.py                  # get_engine() provider factory
-│   ├── evaluate.py                  # Accuracy evaluation logic
-│   ├── management/commands/
-│   │   └── evaluate_sentiment.py    # Benchmark CLI tool
-│   └── tests.py                     # Sentiment engine unit tests
-│
-├── dashboard/                       # Administrative intelligence & reporting
-│   ├── views.py                     # overview metrics & export_feedback_csv
-│   ├── urls.py                      # /dashboard/, /dashboard/export/
-│   └── apps.py
-│
-├── templates/                       # Semantic HTML5 UI templates
-│   ├── base.html                    # Master layout with responsive nav & footer
-│   ├── policies/                    # home.html, list.html, detail.html, _card.html
-│   ├── feedback/                    # _form.html modal partial
-│   ├── dashboard/                   # overview.html staff dashboard
-│   └── pages/                       # how_sentiment.html, about.html, disclaimer.html
-│
-├── static/                          # Static assets served via WhiteNoise
-│   ├── css/site.css                 # Clean, accessible styling
-│   ├── js/sentiment_chart.js        # Chart.js dynamic pie chart integration
-│   └── img/favicon.svg              # Policy Portal SVG emblem
-│
-├── data/                            # Datasets & seed files
-│   ├── policies_seed.csv            # 100+ researched government schemes
-│   ├── feedback_sample.csv          # Annotated demo feedback rows
-│   └── hinglish_test_set.csv        # 50+ Hinglish benchmark test cases
-│
-├── docs/                            # Research & engineering documentation
-│   ├── setup_guide.md               # Local development guide
-│   ├── demo_script.md               # 5-minute evaluation & walkthrough script
-│   ├── test_cases.md                # QA test matrix
-│   ├── accuracy_report.md           # Model accuracy benchmarks
-│   ├── sentiment_notes.md           # NLP architecture & findings
-│   └── policy_research_log.md       # Policy research logs
-│
-├── Dockerfile                       # Multi-stage production container
-├── docker-compose.yml               # Local & VPS container orchestration
-├── entrypoint.sh                    # Container bootstrap & migration script
-├── Procfile                         # Gunicorn process declaration for Render / Heroku
-├── render.yaml                      # Render Blueprint infrastructure specification
-├── build.sh                         # Cloud deployment build pipeline
-├── runtime.txt                      # Explicit Python runtime (3.12.8)
-├── requirements.txt                 # Pinned dependencies
-├── .env.example                     # Environment configuration blueprint
-└── README.md
-```
+Rather than just generic star ratings, Smarth AI collects structured, high-value policy feedback:
+1. **Context & Respondent Profile**: Role (Student, Farmer, MSME, Employee, Senior, Healthcare) and exposure duration (<6m, 6m–1y, 1–2y, 2+y).
+2. **Clarity & Comprehension**: 1–5 language clarity rating and open-text ambiguous clause identification.
+3. **Practical Impact & Fairness**: Day-to-day workflow friction/ease, perceived fairness across the board, and unintended negative consequences/roadblocks.
+4. **Constructive Solutions**: Proposed modifications (what 1 thing would you change/remove) and overall effectiveness rating.
 
 ---
 
-## 🛠️ Technology Stack
+## 🔄 Automated Data Pipeline (PIB RSS Feeds & GitHub Actions)
 
-<table>
-<tr><td valign="top" width="25%"><b>Frontend</b></td><td>
-
-- HTML5 semantic markup, Bootstrap 5.3 (modern layout, responsive grid)
-- Chart.js 4.4 (dynamic public sentiment pie charts)
-- Vanilla JavaScript (zero heavy JS dependencies, ultra-fast load time)
-- Custom CSS with theme variables and high-contrast accessibility
-
-</td></tr>
-<tr><td valign="top"><b>Backend</b></td><td>
-
-- Python 3.12, Django 5.0 / 6.0
-- Gunicorn (Production WSGI HTTP server)
-- WhiteNoise (Compressed static asset serving directly from Python)
-- `dj-database-url` (Automatic database switching between SQLite & Postgres)
-
-</td></tr>
-<tr><td valign="top"><b>NLP & Sentiment</b></td><td>
-
-- **Lexicon Engine**: Custom rule-based tokenizer, negation parsing, Hinglish romanized vocabulary dictionaries
-- **Transformer Engine**: Multilingual transformer model integration (HuggingFace transformers candidate)
-- Evaluation harness for benchmarking precision, recall, and F1 on code-mixed datasets
-
-</td></tr>
-<tr><td valign="top"><b>Database & Storage</b></td><td>
-
-- SQLite (Zero-config local development default)
-- PostgreSQL (Production-ready via `DATABASE_URL` environment injection)
-
-</td></tr>
-<tr><td valign="top"><b>DevOps & Deployment</b></td><td>
-
-- Docker & Docker Compose
-- Render Cloud (`render.yaml` Blueprint + `build.sh`)
-- Procfile for PaaS platforms (Render, Railway, Heroku)
-
-</td></tr>
-<tr><td valign="top"><b>Security</b></td><td>
-
-- Python `hashlib` (SHA-256 salted IP hashing)
-- CSRF middleware with wildcard origin protection (`https://*.onrender.com`)
-- Decoy honeypot form validation against automated scraping bots
-
-</td></tr>
-</table>
+To avoid fragile HTML scrapers that break during government portal redesigns, Smarth AI integrates stable RSS feeds and Open Data APIs:
+- **Step 1: Automated Sources**: PIB (Press Information Bureau) RSS feeds across 8 key ministries (Agriculture, MSME, Education, Finance, Health, Rural Dev, Social Justice, Women & Child) and `data.gov.in` REST APIs.
+- **Step 2: Orchestration**: Automated scheduled Python pipeline (`scripts/automated_scheme_pipeline.py`) running daily via **GitHub Actions** (`.github/workflows/fetch_schemes.yml`) or self-hosted **n8n / Make.com** webhooks.
+- **Step 3: AI Filter & Formatter**: Uses Groq Qwen / Gemini 2.5 to discard routine ministerial meetings/speeches and parse welfare initiatives into strict structured JSON.
+- **Step 4: Database Ingestion**: Inserts into Django database with **Human-in-the-Loop** review mode (saved as Draft/Pending Review before publishing).
+- **Step 5: Automated Expiry Audits**: Weekly automated check flagging schemes older than 180 days or whose application deadlines have passed.
 
 ---
 
-## ⚙️ Installation & Setup
+## ⚡ Performance & Optimization Suite
 
-### 🔹 1. Clone the repository
-
-```bash
-git clone https://github.com/Yashendra-org/SmarthAI.git
-cd SmarthAI
-```
-
-### 🔹 2. Create and activate a virtual environment
-
-```bash
-# macOS / Linux
-python -m venv venv
-source venv/bin/activate
-
-# Windows (PowerShell)
-python -m venv venv
-venv\Scripts\Activate.ps1
-```
-
-### 🔹 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 🔹 4. Configure environment variables
-
-Create a `.env` file in the root directory (or copy `.env.example`):
-
-```bash
-cp .env.example .env
-```
-
-Your `.env` file should look like:
-```env
-SECRET_KEY=your-secure-random-secret-key
-DEBUG=True
-ALLOWED_HOSTS=127.0.0.1,localhost
-SENTIMENT_ENGINE=lexicon
-MIN_RESPONSES_FOR_CHART=10
-```
-
-### 🔹 5. Run database migrations & seed data
-
-```bash
-# Apply database migrations
-python manage.py migrate
-
-# Create the administrator account
-python manage.py createsuperuser
-
-# Load the verified policy catalog
-python manage.py load_policies --publish-all
-
-# (Optional) Load sample feedback for sentiment demo charts
-python manage.py load_sample_feedback
-```
-
-### 🔹 6. Start the local server
-
-```bash
-python manage.py runserver
-```
-
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
+- **Catalog Minification**: `static/js/data.js` minified without redundant whitespace; compressed by 85% over the wire (~580 KB via GZip).
+- **Django GZip Middleware**: `django.middleware.gzip.GZipMiddleware` active for automatic GZip transfer.
+- **HTTP Caching**: `Cache-Control: public, max-age=86400` for CSS, JS, and image assets.
+- **Sub-millisecond Search**: Lowercased pre-computed index (`s._s`) eliminates 13,000+ string allocations per keystroke.
+- **Search Debounce (100ms)**: Eliminates stutter and redundant paints during fast typing.
+- **CSS `content-visibility: auto`**: Browsers skip rendering cards outside viewport; ensures 60 FPS scrolling on mobile and desktop.
+- **Canvas CPU/Battery Saver**: Suspends particle loop when user switches tabs or minimizes the window.
+- **On-Demand Scheme Detail API (`/api/schemes/<slug>/`)**: Fetches full un-truncated criteria and documents in under 3ms.
 
 ---
 
-## 🐳 Docker Setup
+## ❓ Frequently Asked Questions (10 FAQs)
 
-Run the entire application in a container with a single command:
+### 1. What is Smarth AI Policy Portal and is it an official government site?
+Smarth AI is an independent, non-profit civic technology portal designed to make Indian government welfare schemes accessible and easy to understand for all citizens. It is NOT a government agency. All scheme information is verified and ingested from official government sources (myScheme, data.gov.in, PIB, and Ministry portals). We never charge fees and always direct you to the official government website (`.gov.in` / `.nic.in`) to apply.
 
-```bash
-docker compose up -d --build
-```
+### 2. How many schemes are available and how often are they updated?
+The portal catalogues over 1,868 official schemes—covering 439 Central Schemes across all Union Ministries and 1,429 State Schemes across all 28 States and 8 Union Territories. Data is regularly updated via automated ingestion pipelines connected to official government announcement feeds and national scheme registries.
 
-The container automatically executes migrations, collects static assets, seeds policies, and boots Gunicorn on [http://localhost:8000/](http://localhost:8000/).
+### 3. How does the AI Assistant (Chatbot) help me find schemes?
+Our AI Assistant is powered by advanced bilingual models (Qwen & Gemini). You can ask questions in English, Hindi, or Hinglish (e.g. *"I am a 22-year-old student, what education loans or internship schemes can I get?"*). The AI analyzes your profile, explains benefits in simple terms, lists documents required, and provides the official application link.
 
----
+### 4. How does the Indicative Eligibility Checker work?
+The Eligibility tool matches your demographic profile—including age, gender, occupation (farmer, student, woman, senior citizen, worker, entrepreneur), and household income—against scheme guidelines. Results are indicative; final eligibility is determined by the competent government authority upon formal application.
 
-## 🚀 Deployment Guide (Render)
+### 5. What documents are commonly required to apply for government welfare schemes?
+Most schemes require standard KYC documents:
+1. Aadhaar Card linked with active mobile number
+2. Active Bank Account Passbook (with DBT / Aadhaar seeding enabled)
+3. Proof of Address (Ration Card, Electricity Bill, or Voter ID)
+4. Income Certificate issued by Revenue Authority / Tehsildar
+5. Category / Caste / Disability certificate where applicable
+Use our **"Doc Checklist"** tool to verify your documents beforehand.
 
-This repository includes native Render Blueprint configuration for seamless deployment.
+### 6. Are state-specific government schemes included for my state?
+Yes! The portal includes schemes from all 36 Indian States and Union Territories (including Uttar Pradesh, Maharashtra, Bihar, Rajasthan, Madhya Pradesh, Tamil Nadu, Karnataka, Gujarat, Kerala, Haryana, West Bengal, Odisha, Assam, Punjab, and others). Select your state from the **"All States & UTs"** filter on the Schemes page.
 
-### Method 1: Web Service Setup (Manual)
-1. Go to [dashboard.render.com](https://dashboard.render.com/) and click **New +** &rarr; **Web Service**.
-2. Connect repository `Yashendra-org/SmarthAI`.
-3. Set the following parameters:
-   - **Environment**: `Python 3`
-   - **Branch**: `main`
-   - **Build Command**: `bash build.sh`
-   - **Start Command**: `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
-4. Add Environment Variables:
-   - `DEBUG`: `False`
-   - `SECRET_KEY`: *(Generate in Render)*
-   - `ALLOWED_HOSTS`: `.onrender.com,localhost,127.0.0.1`
-   - `CSRF_TRUSTED_ORIGINS`: `https://*.onrender.com`
-   - `SENTIMENT_ENGINE`: `lexicon`
-   - `ADMIN_PASSWORD`: *(Your preferred admin password)*
+### 7. Is my personal data safe? Do you store my Aadhaar, income, or bank details?
+Absolutely safe. Smarth AI operates with a strict privacy-first architecture. We do NOT collect, store, or transmit your Aadhaar number, bank details, or private documents to any server. All eligibility checks, document checklist progress, and comparisons are stored solely inside your own device's browser (`localStorage`).
 
-### Method 2: Blueprint Deployment (One-Click)
-1. In Render Dashboard, click **New +** &rarr; **Blueprint**.
-2. Select `Yashendra-org/SmarthAI`. Render will automatically parse [`render.yaml`](render.yaml) and provision the service.
+### 8. Can I apply directly on this website?
+No third-party portal can legally process official government applications. Smarth AI simplifies the guidelines and gives you the direct, verified button (**"Official website ↗"**) to the authentic government portal (e.g. `pmkisan.gov.in`, `pmsuryaghar.gov.in`, `beneficiary.nha.gov.in`). Always apply only on official `.gov.in` or `.nic.in` domains.
 
----
+### 9. How do I track which documents I have ready before applying?
+Click on **"Doc Checklist"** in the navigation bar. Choose the scheme you want to apply for, and check off the documents you already possess. The tool calculates your readiness percentage and lets you print or save a checklist PDF so you are fully prepared before visiting a CSC or Seva Kendra.
 
-## 📡 API & View Routes
-
-Base URL: `/`
-
-| Method | URL Path | View Controller | Access | Description |
-|---|---|---|---|---|
-| `GET` | `/` | `policies.views.home` | Public | Home landing page with target groups & topics |
-| `GET` | `/policies/` | `policies.views.policy_list` | Public | Searchable policy catalog with state/category/level filters |
-| `GET` | `/policies/<slug>/` | `policies.views.policy_detail` | Public | Detailed policy view with plain summaries, docs & chart |
-| `GET` | `/policies/<slug>/apply/` | `policies.views.apply_redirect` | Public | Increments `apply_clicks` counter and redirects to official `.gov.in` URL |
-| `POST` | `/feedback/<slug>/submit/` | `feedback.views.submit_feedback` | Public | Validates submission, computes sentiment, and records feedback |
-| `GET` | `/how-sentiment-works/` | `policies.views.how_sentiment_works` | Public | Transparency page explaining sentiment computation |
-| `GET` | `/about/` | `policies.views.about` | Public | Platform mission and overview |
-| `GET` | `/disclaimer/` | `policies.views.disclaimer` | Public | Legal transparency notice and independence disclaimer |
-| `GET` | `/dashboard/` | `dashboard.views.overview` | Staff | Administrative metrics, per-policy KPIs, and recent comments |
-| `GET` | `/dashboard/export/` | `dashboard.views.export_feedback_csv` | Staff | Generates downloadable CSV of all citizen feedback |
-| `ANY` | `/admin/` | `django.contrib.admin` | Staff | Django admin panel for policy publishing & moderation |
+### 10. How do I report outdated details, broken links, or incorrect benefits?
+Every scheme page features a **"Report a problem"** button. If a deadline has passed, a portal link has moved, or guidelines have been revised by the Ministry, you can submit feedback directly. You can also rate schemes on our Feedback page to assist fellow citizens.
 
 ---
 
-## 🧪 Testing & Model Evaluation
+## 🛠️ Management Commands
 
-### Running Unit & Integration Tests
+```powershell
+# Bulk-import all 1,868+ National Schemes (Central & 36 States + UTs) in ~3 seconds:
+python manage.py import_all_government_schemes
 
-```bash
+# Auto-fetch and sync with live government feeds using AI simplifier:
+python manage.py sync_gov_schemes --source=all --limit=10
+
+# Run automated test suite:
 python manage.py test
 ```
 
-### Benchmarking Sentiment Accuracy
+---
 
-```bash
-# Evaluate the active engine against data/hinglish_test_set.csv
-python manage.py evaluate_sentiment
+## 💻 Installation & Setup
 
-# Evaluate all candidate engines and export report
-python manage.py evaluate_sentiment --engine all --write
-```
-Results and accuracy metrics will be written to [`docs/accuracy_report.md`](docs/accuracy_report.md).
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/your-username/policy-portal.git
+   cd policy-portal
+   ```
+
+2. **Set up virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Configure Environment Variables (`.env`)**:
+   ```env
+   SECRET_KEY=your-django-secret-key
+   DEBUG=True
+   GROQ_API_KEY=your_groq_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   DATA_GOV_API_KEY=...       # (Optional)
+   APISETU_CLIENT_ID=...      # (Optional)
+   APISETU_API_KEY=...        # (Optional)
+   ```
+
+4. **Initialize Database & Import Schemes**:
+   ```bash
+   python manage.py migrate
+   python manage.py import_all_government_schemes
+   ```
+
+5. **Start Development Server**:
+   ```bash
+   python manage.py runserver
+   ```
+   Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
 
 ---
 
-## 👥 Contributors
-
-<table>
-<tr><th>Name</th><th>Role</th><th>Key Responsibilities</th></tr>
-<tr>
-<td><b>Yashendra Kumar</b></td>
-<td>Lead Architect & Backend Engineer</td>
-<td>Project architecture, Django core, database models, NLP sentiment engines, anti-spam mechanisms, cloud deployment (Docker/Render), and repository lead.</td>
-</tr>
-<tr>
-<td><b>Team 12 Collaborators</b></td>
-<td>Research & Quality Assurance</td>
-<td>Government scheme research, policy data verification, Hinglish annotation test set development, and template styling.</td>
-</tr>
-</table>
-
----
-
-## 🧭 Roadmap / In Progress
-
-- [ ] **Regional Language Summaries** — Expanding beyond Hindi and English to Bengali, Tamil, Telugu, and Marathi.
-- [ ] **Guided Eligibility Wizard** — Interactive 3-step questionnaire (age, income, location, occupation) directing citizens to eligible schemes.
-- [ ] **Topic & Aspect-Based Sentiment Analysis** — Dissecting whether negativity stems specifically from technical portal downtime, document complexity, or payment delays.
-- [ ] **Department Officer Workflow** — Dedicated restricted views for departmental nodal officers to review verified citizen feedback.
-- [ ] **Automated Crawler & Verification Bot** — Scheduled worker checking official `.gov.in` links for broken URLs or revisions.
-
----
-
-## 📜 License
-
-This project is open-source software licensed under the **[MIT License](LICENSE)**.
-
----
-
-## 🙏 Acknowledgements
-
-- **Government Portal Data**: Researched from publicly available official department portals across Indian Ministries.
-- **Natural Language Processing**: Built with inspiration from research on Hinglish and code-mixed Indian language sentiment processing.
-- **Community**: Built as part of Team 12's civic tech innovation initiative.
-
----
-
-<div align="center">
-<h3>🇮🇳 "Democratizing Public Policy Understanding for Every Citizen."</h3>
-</div>
+## 📄 License
+This project is licensed under the [MIT License](LICENSE). Built for public welfare and digital empowerment across India.

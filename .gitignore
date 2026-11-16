@@ -5,3 +5,7 @@ __pycache__/
 *.pyc
 staticfiles/
 .DS_Store
+*.zip
+policies/ingestion/data/*.csv
+
+
