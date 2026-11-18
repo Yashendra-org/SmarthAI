@@ -30,7 +30,20 @@ const GL = { farmer: ["Farmers", "किसान"], student: ["Students", "छ�
 const GM = { "pm-kisan": ["farmer"], pmfby: ["farmer"], "ab-pmjay": ["everyone", "senior"], pmay: ["housing"], ssy: ["women"], pmuy: ["women"], apy: ["worker", "senior"], mudra: ["business"], nsp: ["student"], pmjdy: ["everyone"], pmvishwakarma: ["business", "worker"], pmkvy: ["student", "worker"], mgnrega: ["worker", "farmer"] }, CG = { agriculture: ["farmer"], education: ["student"], women: ["women"], senior: ["senior"], employment: ["worker"], business: ["business"], housing: ["housing"] };
 const whoOf = s => GM[s.id] || CG[s.cat] || ["everyone"], gl = k => GL[k][lang === "hi" ? 1 : 0];
 const VER = "2026-11-14", ver = () => { const d = Math.floor((Date.now() - new Date(VER)) / 864e5); return d > 90 ? `<span class="vb old">⚠ Last verified ${d} days ago – may be outdated</span>` : `<span class="vb">✔ Verified ${d <= 0 ? "today" : d + " days ago"}</span>` };
-const card = s => `<article class="card"><div class="card-top-row"><div class="ic-badge">${ICON[s.cat] || "📌"}</div><div class="card-tags"><span class="tag lvl">${s.lvl}</span><span class="tag cat">${D.cats[s.cat]}</span>${s.state ? `<span class="tag loc">📍 ${esc(s.state)}</span>` : ""}</div></div><h3>${esc(s.name)}</h3><div class="ben">${esc(s.benefit)}</div><div class="mu dept">${esc(s.dept)}</div><div class="row card-actions"><a class="btn pri" href="scheme.html?id=${s.id}">View Details ➔</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
+const fmtBenefit = b => {
+  if (!b) return "";
+  let clean = String(b)
+    .replace(/\ufffd+/g, "₹")
+    .replace(/\*\*(.*?)\*\*/g, "$1") // Remove raw markdown bold markers
+    .replace(/^[•\-\*]\s*/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  // Ensure rupee symbols followed directly by numbers look clean
+  clean = clean.replace(/₹\s*(\d)/g, "₹$1");
+  return esc(clean);
+};
+
+const card = s => `<article class="card"><div class="card-top-row"><div class="ic-badge">${ICON[s.cat] || "📌"}</div><div class="card-tags"><span class="tag lvl">${s.lvl}</span><span class="tag cat">${D.cats[s.cat]}</span>${s.state ? `<span class="tag loc">📍 ${esc(s.state)}</span>` : ""}</div></div><h3>${esc(s.name)}</h3><div class="ben">${fmtBenefit(s.benefit)}</div><div class="mu dept">${esc(s.dept)}</div><div class="row card-actions"><a class="btn pri" href="scheme.html?id=${s.id}">View Details ➔</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
 const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"], ["admin", "admin"]];
 let currentOfficerUser = null;
 

@@ -483,7 +483,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 .cats {
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
 }
 
 .ic {
@@ -498,9 +499,19 @@ input:focus, select:focus, textarea:focus {
 }
 
 .ben {
-  color: var(--pos);
+  color: #0d6e53;
   font-weight: 600;
-  font-size: .95rem;
+  font-size: .92rem;
+  line-height: 1.45;
+  background: rgba(14, 124, 123, 0.06);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #0e7c7b;
+  margin: 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Sections & Panels */
