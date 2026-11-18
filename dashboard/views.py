@@ -1,5 +1,6 @@
 import csv
 import json
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
