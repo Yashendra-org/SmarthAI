@@ -182,19 +182,85 @@ const check = (s, u) => {
   if (r.o && !r.o.includes(u.occ)) miss.push("Usually for: " + r.o.map(o => OCC[o]).join(", "));
   if (r.i && u.income > r.i) miss.push(`Annual family income usually up to ₹${r.i.toLocaleString("en-IN")}`); return miss
 };
-V.eligibility = () => `<h1>Eligibility checker</h1><p class="mu">Indicative only. Rules here are simplified and are not an official decision.</p>
-<form class="f" id="ef"><label>Age<input name="age" type="number" min="0" max="120" required></label>
-<label>Gender<select name="gender"><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option></select></label>
-<label>Occupation<select name="occ">${Object.entries(OCC).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
-<label>Annual family income (₹)<input name="income" type="number" min="0" required></label>
-<button class="pri">Check</button></form><div id="res"></div>`;
+V.eligibility = () => `
+<div class="page-header">
+  <div class="page-title-badge">🎯 Citizen Eligibility Evaluator</div>
+  <h1>Indicative Eligibility Checker</h1>
+  <p class="mu page-sub">Answer 4 simple parameters to instantly filter matching central and state welfare benefits tailored to your profile.</p>
+</div>
+
+<div class="eligibility-container">
+  <form class="f modern-elig-form" id="ef">
+    <div class="form-grid-2">
+      <div class="form-group">
+        <label for="el-age"><b>Citizen Age (Years)</b>
+          <span class="mu-hint">Enter applicant's current age (0 to 120)</span>
+          <input id="el-age" name="age" type="number" min="0" max="120" placeholder="e.g. 24" required>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="el-gender"><b>Gender</b>
+          <span class="mu-hint">Required for women & girl-child targeted schemes</span>
+          <select id="el-gender" name="gender">
+            <option value="female">Female (महिला)</option>
+            <option value="male">Male (पुरुष)</option>
+            <option value="other">Other / Transgender</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="el-occ"><b>Primary Occupation / Employment</b>
+          <span class="mu-hint">Select current daily vocation or status</span>
+          <select id="el-occ" name="occ">
+            ${Object.entries(OCC).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}
+          </select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="el-income"><b>Annual Family Income (₹)</b>
+          <span class="mu-hint">Combined household income as per income certificate</span>
+          <input id="el-income" name="income" type="number" min="0" placeholder="e.g. 180000" required>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions-row">
+      <button type="submit" class="btn pri btn-large">Evaluate Eligible Schemes ➔</button>
+      <button type="reset" class="btn">Clear Form</button>
+    </div>
+  </form>
+</div>
+<div id="res"></div>`;
 V.eligibility.after = () => {
   $("#ef").onsubmit = e => {
     e.preventDefault(); const f = new FormData(e.target), u = { age: +f.get("age"), gender: f.get("gender"), occ: f.get("occ"), income: +f.get("income") };
     const rs = D.schemes.map(s => ({ s, m: check(s, u) })), ok = rs.filter(x => !x.m.length), no = rs.filter(x => x.m.length);
     push("elig", { t: new Date().toLocaleString("en-IN"), age: u.age, occ: OCC[u.occ], n: ok.length }, 8);
-    $("#res").innerHTML = `<h2>${ok.length} possible match${ok.length === 1 ? "" : "es"}</h2>` + (ok.map(({ s }) => `<div class="sec ok"><h3><a href="scheme.html?id=${s.id}">${esc(s.name)}</a></h3><p>${esc(s.benefit)}</p><p class="mu">Documents: ${esc(s.docs.join(", "))}</p><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">Official site ↗</a></div>`).join("") || "<p>No match found.</p>") +
-      `<details><summary>Not matching (${no.length})</summary>${no.map(({ s, m }) => `<div class="sec no"><b>${esc(s.name)}</b><ul>${m.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}</details>`; $("#res").scrollIntoView({ behavior: "smooth" })
+    $("#res").innerHTML = `
+      <div class="elig-results-header">
+        <h2>${ok.length} Eligible Scheme Matches Found</h2>
+        <p class="mu">Based on age ${u.age}, ${u.gender}, ${OCC[u.occ]}, and ₹${u.income.toLocaleString("en-IN")}/yr family income.</p>
+      </div>
+      <div class="grid">${ok.map(({ s }) => card(s)).join("") || "<p class='mu'>No exact matches found for these specific criteria.</p>"}</div>
+      ${no.length ? `
+      <details class="modern-faq" style="margin-top:2rem">
+        <summary>Review Non-Matching Schemes (${no.length} skipped based on criteria)</summary>
+        <div class="faq-body">
+          <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:10px">
+            ${no.slice(0, 15).map(({ s, m }) => `
+              <div class="card" style="padding:14px;border-left:3px solid #f59e0b">
+                <b>${esc(s.name)}</b>
+                <div class="mu" style="font-size:0.82rem;margin-top:4px">Criteria mismatch: ${esc(m.join("; "))}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </details>` : ""}
+    `;
+    $("#res").scrollIntoView({ behavior: "smooth" });
   }
 };
 
@@ -226,7 +292,7 @@ const speak = txt => {
     u.rate = 1.0; // Optimized natural conversational speed
     u.pitch = 1.0;
     speechSynthesis.speak(u);
-  } catch (e) {}
+  } catch (e) { }
 };
 
 const navCmd = q => {
@@ -485,8 +551,38 @@ V.assistant.after = p => {
 };
 
 /* Services */
-V.services = () => `<h1>Departments & services</h1><h2>Citizen services</h2><div class="grid">${D.services.map(x => `<a class="card" href="${x[1]}" target="_blank" rel="noopener noreferrer">${esc(x[0])} ↗</a>`).join("")}</div>
-<h2>Ministries</h2><div class="grid">${D.depts.map(x => `<a class="card" href="${x[1]}" target="_blank" rel="noopener noreferrer">${esc(x[0])} ↗</a>`).join("")}</div>`;
+V.services = () => `
+<div class="page-header">
+  <div class="page-title-badge">🏛️ National Digital Infrastructure</div>
+  <h1>Departments &amp; Citizen Services Directory</h1>
+  <p class="mu page-sub">Verified direct access points to official Union Ministries, State Portals, and central citizen utility platforms.</p>
+</div>
+
+<h2>Direct Citizen Digital Services</h2>
+<div class="grid services-grid">
+  ${D.services.map(x => `
+    <a class="card modern-service-card" href="${x[1]}" target="_blank" rel="noopener noreferrer">
+      <div class="service-icon-box">🔗</div>
+      <div class="service-content">
+        <b>${esc(x[0])}</b>
+        <span class="mu-url">${x[1].replace(/^https?:\/\//, "")} ↗</span>
+      </div>
+    </a>
+  `).join("")}
+</div>
+
+<h2 style="margin-top:2.5rem">Union Ministries &amp; Nodal Departments</h2>
+<div class="grid services-grid">
+  ${D.depts.map(x => `
+    <a class="card modern-service-card" href="${x[1]}" target="_blank" rel="noopener noreferrer">
+      <div class="service-icon-box">🏛️</div>
+      <div class="service-content">
+        <b>${esc(x[0])}</b>
+        <span class="mu-url">${x[1].replace(/^https?:\/\//, "")} ↗</span>
+      </div>
+    </a>
+  `).join("")}
+</div>`;
 
 /* Feedback */
 let stars = 0, clarityStars = 0;
@@ -629,13 +725,54 @@ V.feedback.after = () => {
 
 /* Dashboard */
 V.dashboard = () => {
-  const list = (ids) => ids.map(byId).filter(Boolean).map(card).join("") || "<p class='mu'>Nothing here yet.</p>";
-  return `<h1>My dashboard</h1><p class="mu">Stored only in this browser.</p><h2>Saved schemes</h2><div class="grid">${list(S.get("saved", []))}</div>
-<h2>Document readiness</h2>${ckOverview()}
-<h2>Recently viewed</h2><div class="grid">${list(S.get("recent", []))}</div>
-<h2>Recent searches</h2><p>${S.get("searches", []).map(x => `<a class="tag" href="schemes.html?q=${encodeURIComponent(x)}">${esc(x)}</a>`).join("") || "<span class='mu'>None</span>"}</p>
-<h2>Eligibility history</h2>${S.get("elig", []).map(x => `<div class="sec">${esc(x.t)} · age ${x.age} · ${esc(x.occ)} · ${x.n} matches</div>`).join("") || "<p class='mu'>None</p>"}
-<div class="row"><button id="ex">Export my data (JSON)</button><button id="rs">Reset all local data</button></div>`};
+  const saved = S.get("saved", []).map(byId).filter(Boolean);
+  const recent = S.get("recent", []).map(byId).filter(Boolean);
+  const searches = S.get("searches", []);
+  const eligHistory = S.get("elig", []);
+
+  return `
+  <div class="page-header">
+    <div class="page-title-badge">👤 Citizen Vault &amp; Tracker</div>
+    <h1>My Personal Policy Dashboard</h1>
+    <p class="mu page-sub">Private local tracker on this device. Your data is never sold or transferred to external servers.</p>
+  </div>
+
+  <div class="dashboard-metrics-grid">
+    <div class="metric-card">
+      <span class="metric-num">${saved.length}</span>
+      <span class="metric-label">Bookmarked Schemes</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-num">${Object.keys(CK()).length}</span>
+      <span class="metric-label">Checklists In Progress</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-num">${recent.length}</span>
+      <span class="metric-label">Recently Inspected</span>
+    </div>
+  </div>
+
+  <h2>Saved / Bookmarked Schemes</h2>
+  ${saved.length ? `<div class="grid">${saved.map(card).join("")}</div>` : `<div class="sec empty-sec"><p class="mu">No schemes bookmarked yet. Tap "☆ Save" on any scheme details page to bookmark it here.</p></div>`}
+
+  <h2 style="margin-top:2rem">Document Readiness Progress</h2>
+  <div class="checklist-summary-box">${ckOverview()}</div>
+
+  <h2 style="margin-top:2rem">Recently Viewed Schemes</h2>
+  ${recent.length ? `<div class="grid">${recent.map(card).join("")}</div>` : `<div class="sec empty-sec"><p class="mu">No recently viewed schemes on this device.</p></div>`}
+
+  <h2 style="margin-top:2rem">Recent Search Queries</h2>
+  <div class="chips">${searches.length ? searches.map(x => `<a class="chip" href="schemes.html?q=${encodeURIComponent(x)}">🔍 ${esc(x)}</a>`).join("") : "<span class='mu'>No recent searches</span>"}</div>
+
+  <div class="sec dashboard-action-panel" style="margin-top:2.5rem">
+    <h3>Data Privacy &amp; Device Controls</h3>
+    <p class="mu">Export your bookmarks and checklists as a JSON backup or wipe local storage completely.</p>
+    <div class="row">
+      <button id="ex" class="btn">📥 Export My Data (JSON)</button>
+      <button id="rs" class="btn btn-danger">🗑️ Reset All Local Data</button>
+    </div>
+  </div>`;
+};
 V.dashboard.after = () => {
   $("#ex").onclick = () => {
     const o = {}; Object.keys(localStorage).filter(k => k.startsWith("sm_")).forEach(k => o[k] = localStorage.getItem(k));
@@ -951,11 +1088,32 @@ const ckOverview = () => {
 };
 
 V.checklist = p => {
-  const id = p.get("id") || S.get("cklast", ""); const saved = S.get("saved", []).map(x => byId(x)).filter(Boolean).slice(0, 6);
-  return `<h1>Document readiness checker</h1><p class="mu">Pick a scheme, tick the documents you already have and see how ready you are to apply.</p>
-<div class="bar"><select id="ks" aria-label="Scheme">${schemeOpts(id)}</select></div>
-${saved.length ? `<div class="row" id="ksv"><span class="mu">Your saved schemes:</span>${saved.map(s => `<button class="chip" data-id="${esc(s.id)}">${esc(s.name)}</button>`).join("")}</div>` : ""}
-<div id="kres"></div><h2>Your checklists in progress</h2><div id="kov">${ckOverview()}</div>`
+  const id = p.get("id") || S.get("cklast", "");
+  const saved = S.get("saved", []).map(x => byId(x)).filter(Boolean).slice(0, 8);
+  return `
+  <div class="page-header">
+    <div class="page-title-badge">📑 Zero-Rejection Application Prep</div>
+    <h1>Document Readiness Checker</h1>
+    <p class="mu page-sub">Pick any welfare scheme, tick off documents in your possession, and resolve missing certificate blockers before reaching the application portal.</p>
+  </div>
+
+  <div class="sec modern-selector-box">
+    <label for="ks" style="font-weight:700;display:block;margin-bottom:8px">Select Scheme to Audit Documents:</label>
+    <div class="bar" style="margin:0"><select id="ks" aria-label="Select Scheme">${schemeOpts(id)}</select></div>
+    ${saved.length ? `
+      <div class="saved-quick-picks" style="margin-top:12px">
+        <span class="mu" style="font-size:0.85rem">Quick select from saved schemes:</span>
+        <div class="chips" id="ksv" style="margin:6px 0 0">
+          ${saved.map(s => `<button class="chip modern-chip" data-id="${esc(s.id)}" style="cursor:pointer">⭐ ${esc(s.name)}</button>`).join("")}
+        </div>
+      </div>
+    ` : ""}
+  </div>
+
+  <div id="kres"></div>
+  <h2 style="margin-top:2.5rem">Checklists In Progress on This Device</h2>
+  <div id="kov">${ckOverview()}</div>
+  `;
 };
 V.checklist.after = () => {
   const ks = $("#ks"), res = $("#kres"); let cur = null;
