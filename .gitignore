@@ -8,5 +8,8 @@ staticfiles/
 *.zip
 policies/ingestion/data/*.csv
 bhagwan*
+.vscode/
+.venv/
+
 
 
