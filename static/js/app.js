@@ -797,122 +797,189 @@ V.dashboard.after = () => {
 
 V.admin = () => {
   if (!currentOfficerUser || !currentOfficerUser.is_staff) {
-    return `<div style="max-width:480px;margin:3rem auto;background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:2.2rem;box-shadow:0 10px 30px rgba(0,0,0,0.08);text-align:center">
-      <div style="font-size:3rem;margin-bottom:.5rem">🏛️</div>
-      <span class="tag" style="background:#fef3c7;color:#92400e;font-weight:700;padding:4px 10px;border-radius:12px;font-size:0.8rem">RESTRICTED GOVERNMENT PORTAL</span>
-      <h2 style="margin:1rem 0 .5rem;color:var(--ink);font-size:1.5rem">Ministry Officer SSO Login</h2>
-      <p class="mu" style="font-size:0.9rem;margin-bottom:1.5rem">This administrative console is restricted to authorized Government Officials, Ministry Department Heads, and Portal System Administrators.</p>
-      <form id="adm-login-form" style="text-align:left;display:flex;flex-direction:column;gap:1rem">
-        <div>
-          <label style="font-weight:600;font-size:.88rem;color:var(--ink);display:block;margin-bottom:.3rem">Officer / Admin Username</label>
-          <input type="text" id="adm-user" placeholder="Enter government staff username" required style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:6px;font-size:.95rem">
-        </div>
-        <div>
-          <label style="font-weight:600;font-size:.88rem;color:var(--ink);display:block;margin-bottom:.3rem">Security Password / Passcode</label>
-          <input type="password" id="adm-pass" placeholder="••••••••••••" required style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:6px;font-size:.95rem">
-        </div>
-        <div id="adm-login-err" style="display:none;color:#b91c1c;font-size:.85rem;background:#fee2e2;padding:.5rem;border-radius:6px"></div>
-        <button type="submit" id="adm-login-btn" class="btn pri" style="width:100%;padding:.75rem;font-size:1rem;font-weight:600;margin-top:.5rem">Authenticate as Officer ➔</button>
-      </form>
-      <p class="mu" style="font-size:.78rem;margin-top:1.5rem;line-height:1.4">Authorized access under IT Security &amp; Compliance Guidelines. Unofficial attempts are logged under cyber security monitoring.</p>
+    return `
+    <div class="admin-login-wrapper">
+      <div class="admin-login-card">
+        <div class="admin-badge-icon">🏛️</div>
+        <span class="tag restricted-tag">RESTRICTED GOVERNMENT PORTAL</span>
+        <h2>Ministry Officer SSO Login</h2>
+        <p class="mu admin-login-sub">Secure command console restricted to authorized Government Officials, Ministry Department Heads, and System Administrators.</p>
+        
+        <form id="adm-login-form" class="admin-login-form">
+          <div class="form-group">
+            <label for="adm-user"><b>Officer / Admin Username</b>
+              <input type="text" id="adm-user" placeholder="Enter government staff username" required autocomplete="username">
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="adm-pass"><b>Security Password / Passcode</b>
+              <input type="password" id="adm-pass" placeholder="••••••••••••" required autocomplete="current-password">
+            </label>
+          </div>
+          <div id="adm-login-err" class="admin-error-box" style="display:none"></div>
+          <button type="submit" id="adm-login-btn" class="btn pri btn-large" style="width:100%;margin-top:0.5rem">
+            Authenticate as Officer ➔
+          </button>
+        </form>
+        <p class="mu admin-legal-note">Authorized access under IT Security &amp; Compliance Guidelines. Authentications are monitored under cyber security compliance.</p>
+      </div>
     </div>`;
   }
 
   const m = ADM(), fb = S.get("fb", []), all = [...D.all.filter(s => !m.deleted.includes(s.id)), ...m.custom], c = { Positive: 0, Neutral: 0, Negative: 0 }; fb.forEach(x => c[x.s]++);
-  return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line);padding-bottom:1rem">
+  return `
+  <div class="admin-top-bar">
     <div>
-      <h1 style="margin:0;display:flex;align-items:center;gap:.6rem"><span>⚙️</span> Officer &amp; Admin Command Center</h1>
+      <div class="page-title-badge" style="background:#fef3c7;color:#92400e">⚡ Ministry Administration</div>
+      <h1 style="margin:4px 0 0;display:flex;align-items:center;gap:.6rem">Officer Command Center</h1>
       <p class="mu" style="margin:.3rem 0 0">Logged in as: <b>${esc(currentOfficerUser.username)}</b> (${currentOfficerUser.is_superuser ? "Super Administrator" : "Ministry Officer"})</p>
     </div>
-    <div style="display:flex;gap:.5rem;align-items:center">
-      <a href="/admin/" target="_blank" class="btn" style="background:#0f172a;color:#fff;border-color:#0f172a;font-size:.85rem">Django Staff Portal ↗</a>
-      <button id="btn-adm-logout" class="btn" style="background:#fee2e2;color:#991b1b;border-color:#fca5a5;font-weight:600;font-size:.85rem">Sign Out</button>
+    <div class="admin-top-actions">
+      <a href="/admin/" target="_blank" class="btn" style="background:#0f172a;color:#fff;border-color:#0f172a;font-size:.85rem">Django Database Admin ↗</a>
+      <button id="btn-adm-logout" class="btn btn-danger" style="font-size:.85rem">Sign Out</button>
     </div>
   </div>
 
-  <div class="grid" id="adm-kpi-grid">${[["Central & State Schemes", all.length], ["Published & Live", all.length - m.hidden.filter(h => all.some(s => s.id === h)).length], ["Citizen Audits", fb.length], ["Positive Perceptions", c.Positive], ["Neutral Evaluations", c.Neutral], ["Negative / Friction", c.Negative]].map(x => `<div class="card"><span class="mu">${x[0]}</span><h2 style="margin:0">${x[1]}</h2></div>`).join("")}</div>
+  <div class="admin-kpi-grid">
+    <div class="metric-card"><span class="metric-num">${all.length}</span><span class="metric-label">Central &amp; State Schemes</span></div>
+    <div class="metric-card"><span class="metric-num" style="color:#0d6e53">${all.length - m.hidden.filter(h => all.some(s => s.id === h)).length}</span><span class="metric-label">Published &amp; Live</span></div>
+    <div class="metric-card"><span class="metric-num">${fb.length}</span><span class="metric-label">Citizen Audits</span></div>
+    <div class="metric-card"><span class="metric-num" style="color:#0284c7">${c.Positive}</span><span class="metric-label">Positive Ratings</span></div>
+    <div class="metric-card"><span class="metric-num" style="color:#d97706">${c.Neutral}</span><span class="metric-label">Neutral Reviews</span></div>
+    <div class="metric-card"><span class="metric-num" style="color:#dc2626">${c.Negative}</span><span class="metric-label">Friction / Issues</span></div>
+  </div>
 
-<div class="sec" style="background:rgba(255,255,255,0.96);border:2px solid var(--accent);border-radius:10px;padding:1.4rem;margin:1.5rem 0;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
-    <h2 style="margin:0;color:var(--accent);display:flex;align-items:center;gap:.5rem">
-      <span>🔄</span> <span>Auto-Fetch Government Schemes (AI Simplifier)</span>
-    </h2>
-    <span class="tag" style="background:#e0f2f1;color:#00695c;font-weight:bold;padding:4px 10px;border-radius:12px">API Setu • data.gov.in • MyGov • Live Feeds</span>
+  <div class="sec modern-sync-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
+      <h2 style="margin:0;color:var(--accent);display:flex;align-items:center;gap:.5rem">
+        <span>🔄</span> <span>Auto-Fetch Government Schemes (AI Simplifier)</span>
+      </h2>
+      <span class="tag" style="background:#e0f2f1;color:#00695c;font-weight:bold;padding:4px 10px;border-radius:12px">API Setu • data.gov.in • MyGov • Live Feeds</span>
+    </div>
+    <p class="mu" style="margin-top:0;font-size:.95rem">
+      Automatically discover, pull, and simplify Indian government schemes directly from official APIs and announcement feeds. Smarth AI simplifies dense bureaucratic text into clean English &amp; Hindi summaries, key benefits, and eligibility checklists.
+    </p>
+    <form id="sync-form" class="f" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem">
+      <div>
+        <label style="font-weight:600;display:block;margin-bottom:.35rem">Data Source:</label>
+        <select id="sync-source" style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:8px;background:#fff">
+          <option value="national" selected>National Directory (All 1,800+ Central &amp; State Schemes)</option>
+          <option value="curated">Verified Ministry Schemes (Live 2024 Feeds)</option>
+          <option value="data_gov">Open Government Data (data.gov.in)</option>
+          <option value="apisetu">API Setu – myScheme (apisetu.gov.in)</option>
+          <option value="mygov">MyGov Developer APIs (developers.mygov.in)</option>
+          <option value="feeds">PIB &amp; Ministry Press Feeds (pib.gov.in)</option>
+          <option value="all">All Sources (Batch Ingestion)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight:600;display:block;margin-bottom:.35rem">Limit Per Source:</label>
+        <select id="sync-limit" style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:8px;background:#fff">
+          <option value="5">5 Schemes</option>
+          <option value="10" selected>10 Schemes</option>
+          <option value="20">20 Schemes</option>
+        </select>
+      </div>
+      <div style="grid-column:1/-1">
+        <details style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.8rem 1rem">
+          <summary style="cursor:pointer;font-weight:600;color:var(--ink)">🔑 API Credentials (Optional for Live Feeds, required for official partner portals)</summary>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;margin-top:.75rem">
+            <div><label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">data.gov.in API Key:</label><input type="text" id="sync-datagov-key" placeholder="Enter OGD API Key" style="width:100%;padding:.5rem"></div>
+            <div><label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">API Setu Client ID:</label><input type="text" id="sync-apisetu-clientid" placeholder="X-APISETU-CLIENTID" style="width:100%;padding:.5rem"></div>
+            <div><label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">API Setu API Key:</label><input type="password" id="sync-apisetu-key" placeholder="X-APISETU-APIKEY" style="width:100%;padding:.5rem"></div>
+            <div><label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">MyGov API Key:</label><input type="text" id="sync-mygov-key" placeholder="MyGov API Key" style="width:100%;padding:.5rem"></div>
+          </div>
+        </details>
+      </div>
+      <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:.5rem">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+          <input type="checkbox" id="sync-use-ai" checked>
+          <b>Enable AI Simplification (Qwen / Gemini)</b>
+        </label>
+        <button type="submit" id="btn-start-sync" class="btn pri btn-large">
+          ⚡ Fetch &amp; Ingest Government Schemes
+        </button>
+      </div>
+    </form>
+    <div id="sync-status-box" style="display:none;background:#0f172a;color:#f8fafc;padding:1.1rem;border-radius:8px;font-family:monospace;font-size:.88rem;margin-top:1.1rem">
+      <div id="sync-spinner" style="font-weight:bold;color:#38bdf8;margin-bottom:.5rem">⏳ Syncing with official government portals...</div>
+      <div id="sync-logs" style="max-height:160px;overflow-y:auto;white-space:pre-wrap;color:#cbd5e1;line-height:1.5"></div>
+    </div>
   </div>
-  <p class="mu" style="margin-top:0;font-size:.95rem">
-    Automatically discover, pull, and simplify Indian government schemes directly from official APIs and announcement feeds. Smarth AI (Qwen / Gemini) simplifies dense bureaucratic text into clean, 2-line English &amp; Hindi summaries, key benefits, and eligibility checklists.
-  </p>
-  <form id="sync-form" class="f" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem">
-    <div>
-      <label style="font-weight:600;display:block;margin-bottom:.35rem">Data Source:</label>
-      <select id="sync-source" style="width:100%;padding:.55rem;border:1px solid var(--line);border-radius:6px;background:#fff">
-        <option value="national" selected>National Directory (All 1,800+ Central &amp; State Schemes)</option>
-        <option value="curated">Verified Ministry Schemes (Live 2024 Feeds)</option>
-        <option value="data_gov">Open Government Data (data.gov.in)</option>
-        <option value="apisetu">API Setu – myScheme (apisetu.gov.in)</option>
-        <option value="mygov">MyGov Developer APIs (developers.mygov.in)</option>
-        <option value="feeds">PIB &amp; Ministry Press Feeds (pib.gov.in)</option>
-        <option value="all">All Sources (Batch Ingestion)</option>
-      </select>
-    </div>
-    <div>
-      <label style="font-weight:600;display:block;margin-bottom:.35rem">Limit Per Source:</label>
-      <select id="sync-limit" style="width:100%;padding:.55rem;border:1px solid var(--line);border-radius:6px;background:#fff">
-        <option value="5">5 Schemes</option>
-        <option value="10" selected>10 Schemes</option>
-        <option value="20">20 Schemes</option>
-      </select>
-    </div>
-    <div style="grid-column:1/-1">
-      <details style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.6rem .9rem">
-        <summary style="cursor:pointer;font-weight:600;color:var(--ink)">🔑 API Credentials (Optional for Live Feeds, required for official partner portals)</summary>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;margin-top:.75rem">
-          <div>
-            <label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">data.gov.in API Key:</label>
-            <input type="text" id="sync-datagov-key" placeholder="Enter OGD API Key" style="width:100%;padding:.4rem">
-          </div>
-          <div>
-            <label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">API Setu Client ID:</label>
-            <input type="text" id="sync-apisetu-clientid" placeholder="X-APISETU-CLIENTID" style="width:100%;padding:.4rem">
-          </div>
-          <div>
-            <label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">API Setu API Key:</label>
-            <input type="password" id="sync-apisetu-key" placeholder="X-APISETU-APIKEY" style="width:100%;padding:.4rem">
-          </div>
-          <div>
-            <label style="font-size:.82rem;color:var(--mu);display:block;margin-bottom:.2rem">MyGov API Key:</label>
-            <input type="text" id="sync-mygov-key" placeholder="MyGov API Key" style="width:100%;padding:.4rem">
-          </div>
-        </div>
-      </details>
-    </div>
-    <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:.5rem">
-      <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
-        <input type="checkbox" id="sync-use-ai" checked>
-        <b>Enable AI Simplification (Qwen / Gemini)</b>
-      </label>
-      <button type="submit" id="btn-start-sync" class="btn pri" style="padding:.65rem 1.6rem;font-weight:bold;cursor:pointer">
-        ⚡ Fetch &amp; Ingest Government Schemes
-      </button>
-    </div>
-  </form>
-  <div id="sync-status-box" style="display:none;background:#0f172a;color:#f8fafc;padding:1.1rem;border-radius:8px;font-family:monospace;font-size:.88rem;margin-top:1.1rem">
-    <div id="sync-spinner" style="font-weight:bold;color:#38bdf8;margin-bottom:.5rem">⏳ Syncing with official government portals...</div>
-    <div id="sync-logs" style="max-height:160px;overflow-y:auto;white-space:pre-wrap;color:#cbd5e1;line-height:1.5"></div>
-  </div>
-</div>
 
-<div class="sec"><h2>Add scheme manually</h2><form class="f" id="af"><input name="name" placeholder="Scheme name" required><select name="cat">${Object.entries(D.cats).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select><input name="dept" placeholder="Department" required><input name="benefit" placeholder="Main benefit" required><input name="url" type="url" placeholder="Official https:// link" required><textarea name="desc" placeholder="Description" rows="2"></textarea><button class="pri">Add scheme</button></form></div>
-<div class="sec">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem">
-    <h2 style="margin:0">Manage schemes (Central &amp; State Catalog)</h2>
-    <span class="mu" style="font-size:0.85rem">Live Portal Registry</span>
+  <div class="sec" style="border-radius:12px;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+      <div>
+        <h2 style="margin:0">Manage Catalog Schemes</h2>
+        <p class="mu" style="margin:4px 0 0;font-size:0.85rem">Quickly publish, hide, or remove welfare schemes directly from the portal directory.</p>
+      </div>
+      <input id="adm-search-scheme" placeholder="Filter schemes by name…" style="padding:.5rem .9rem;border-radius:6px;border:1px solid #cbd5e1;min-width:240px">
+    </div>
+    <div style="overflow:auto;max-height:480px" id="adm-scheme-table-wrap">
+      <table class="ct">
+        <thead><tr><th>Scheme Name</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="adm-table-body">
+          ${all.slice(0, 80).map(s => `
+            <tr>
+              <td><b>${esc(s.name)}</b><br><span class="mu" style="font-size:.8rem">${esc(s.dept || "")}</span></td>
+              <td><span class="tag">${D.cats[s.cat] || s.cat}</span></td>
+              <td><span class="tag" style="background:${m.hidden.includes(s.id) ? '#fee2e2;color:#991b1b' : '#dcfce7;color:#166534'}">${m.hidden.includes(s.id) ? "Draft / Hidden" : "Published"}</span></td>
+              <td>
+                <div style="display:flex;gap:6px">
+                  <button class="btn" style="padding:4px 10px;font-size:.8rem" data-tg="${s.id}">${m.hidden.includes(s.id) ? "Publish" : "Unpublish"}</button>
+                  <button class="btn btn-danger" style="padding:4px 10px;font-size:.8rem" data-rm="${s.id}">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div style="overflow:auto"><table><tr><th>Name</th><th>Category</th><th>Status</th><th>Actions</th></tr>${all.map(s => `<tr><td><b>${esc(s.name)}</b><br><span class="mu" style="font-size:.8rem">${esc(s.dept || "")}</span></td><td>${D.cats[s.cat] || s.cat}</td><td><span class="tag" style="background:${m.hidden.includes(s.id) ? '#fee2e2;color:#991b1b' : '#dcfce7;color:#166534'}">${m.hidden.includes(s.id) ? "Draft / Hidden" : "Published"}</span></td><td><button data-tg="${s.id}">${m.hidden.includes(s.id) ? "Publish" : "Unpublish"}</button> <button data-rm="${s.id}">Delete</button></td></tr>`).join("")}</table></div>
-</div>
-<div class="sec"><h2>Feedback &amp; Citizen Audits</h2>${fb.map((x, i) => `<p>${"★".repeat(x.r)} <span class="tag">${x.s}</span> ${esc(x.c)} <button data-fd="${i}">Delete</button></p>`).join("") || "<p class='mu'>No feedback yet.</p>"}</div>
-<div class="sec"><h2>Citizen Problem Reports</h2>${S.get("reports", []).map((x, i) => `<p><b>${esc(byId(x.sid)?.name || x.sid)}</b> · ${esc(x.t)}: ${esc(x.m)} <button data-rp="${i}">Resolve</button></p>`).join("") || "<p class='mu'>No problem reports pending resolution.</p>"}</div>
-<div class="row"><button id="e1">Export schemes CSV</button><button id="e2">Export feedback CSV</button><button id="rs">Reset local cache</button></div>`};
+
+  <div class="sec" style="border-radius:12px;padding:24px">
+    <h2>Add New Scheme Manually</h2>
+    <form class="f form-grid-2" id="af">
+      <input name="name" placeholder="Scheme Name (e.g. PM Kisan)" required>
+      <select name="cat">${Object.entries(D.cats).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select>
+      <input name="dept" placeholder="Nodal Ministry / Department" required>
+      <input name="benefit" placeholder="Core Financial / Welfare Benefit" required>
+      <input name="url" type="url" placeholder="Official Portal https:// Link" required>
+      <textarea name="desc" placeholder="Brief Summary &amp; Objective" rows="2"></textarea>
+      <div style="grid-column:1/-1"><button class="pri btn-large">Add Scheme to Directory ➔</button></div>
+    </form>
+  </div>
+
+  <div class="sec" style="border-radius:12px;padding:24px">
+    <h2>Citizen Feedback &amp; Policy Audits</h2>
+    ${fb.length ? `
+      <div style="overflow:auto">
+        <table class="ct">
+          <thead><tr><th>Rating</th><th>Sentiment</th><th>Feedback</th><th>Action</th></tr></thead>
+          <tbody>
+            ${fb.map((x, i) => `
+              <tr>
+                <td><span style="color:#f59e0b;font-size:1.1rem">${"★".repeat(x.r)}</span></td>
+                <td><span class="tag">${x.s}</span></td>
+                <td>${esc(x.c || "No comment")}</td>
+                <td><button class="btn btn-danger" style="padding:4px 10px;font-size:.8rem" data-fd="${i}">Delete</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    ` : "<p class='mu'>No citizen feedback records yet.</p>"}
+  </div>
+
+  <div class="sec dashboard-action-panel">
+    <h3>Data Export &amp; Maintenance</h3>
+    <div class="row">
+      <button id="e1" class="btn">📥 Export Schemes CSV</button>
+      <button id="e2" class="btn">📥 Export Feedback CSV</button>
+      <button id="rs" class="btn btn-danger">Reset Local Admin Cache</button>
+    </div>
+  </div>`;
+};
 V.admin.after = () => {
   if (!currentOfficerUser || !currentOfficerUser.is_staff) {
     const lf = $("#adm-login-form");
@@ -1013,6 +1080,31 @@ V.admin.after = () => {
     };
   }
   $("#af").onsubmit = e => { e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)), m = ADM(); m.custom.push({ id: "c" + Date.now(), name: f.name, cat: f.cat, lvl: "Central", dept: f.dept, benefit: f.benefit, desc: f.desc || f.benefit, elig: ["See official website"], docs: ["See official website"], apply: "Apply on the official website.", url: f.url, r: {} }); sv(m) };
+  
+  const searchInput = $("#adm-search-scheme");
+  if (searchInput) {
+    searchInput.oninput = () => {
+      const q = searchInput.value.trim().toLowerCase();
+      const filtered = all.filter(s => !q || s.name.toLowerCase().includes(q) || (s.dept && s.dept.toLowerCase().includes(q)));
+      const tbody = $("#adm-table-body");
+      if (tbody) {
+        tbody.innerHTML = filtered.slice(0, 80).map(s => `
+          <tr>
+            <td><b>${esc(s.name)}</b><br><span class="mu" style="font-size:.8rem">${esc(s.dept || "")}</span></td>
+            <td><span class="tag">${D.cats[s.cat] || s.cat}</span></td>
+            <td><span class="tag" style="background:${m.hidden.includes(s.id) ? '#fee2e2;color:#991b1b' : '#dcfce7;color:#166534'}">${m.hidden.includes(s.id) ? "Draft / Hidden" : "Published"}</span></td>
+            <td>
+              <div style="display:flex;gap:6px">
+                <button class="btn" style="padding:4px 10px;font-size:.8rem" data-tg="${s.id}">${m.hidden.includes(s.id) ? "Publish" : "Unpublish"}</button>
+                <button class="btn btn-danger" style="padding:4px 10px;font-size:.8rem" data-rm="${s.id}">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") || "<tr><td colspan='4' class='mu' style='text-align:center;padding:1rem'>No schemes found matching search.</td></tr>";
+      }
+    };
+  }
+
   $("#main").onclick = e => {
     const d = e.target.dataset, m = ADM(); if (d.tg) { m.hidden = m.hidden.includes(d.tg) ? m.hidden.filter(x => x !== d.tg) : [...m.hidden, d.tg]; sv(m) }
     else if (d.rm && confirm("Delete this scheme?")) { m.custom = m.custom.filter(s => s.id !== d.rm); if (D.all.some(s => s.id === d.rm)) m.deleted.push(d.rm); sv(m) }
