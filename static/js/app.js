@@ -253,8 +253,10 @@ const fmtBenefit = b => {
 };
 
 /* Upgraded Scheme Card Component */
-const card = s => `
-<article class="card modern-scheme-card" data-id="${esc(s.id)}">
+const card = s => {
+  const isCompared = S.get("cmp", []).includes(s.id);
+  return `
+<article class="card modern-scheme-card ${isCompared ? 'card-selected-cmp' : ''}" data-id="${esc(s.id)}">
   <div class="card-top-row">
     <div class="ic-badge" title="${esc(D.cats[s.cat] || s.cat)}">${ICON[s.cat] || "📌"}</div>
     <div class="card-tags">
@@ -267,16 +269,17 @@ const card = s => `
   <div class="ben">${fmtBenefit(s.benefit)}</div>
   <div class="mu dept">${esc(s.dept)}</div>
   <div class="card-actions">
-    <a class="btn pri btn-scheme-view" href="scheme.html?id=${encodeURIComponent(s.id)}">
+    <a class="btn pri btn-scheme-view" href="/scheme.html?id=${encodeURIComponent(s.id)}">
       <span>View Details</span>
       ${SVG_ICONS.arrowRight}
     </a>
     <label class="cmp" title="Select to compare side by side">
-      <input type="checkbox" data-cmp="${esc(s.id)}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}>
+      <input type="checkbox" data-cmp="${esc(s.id)}"${isCompared ? " checked" : ""}>
       <span class="cmp-text">${t("compare")}</span>
     </label>
   </div>
 </article>`;
+};
 
 const NAV = [
   ["index", "home"],
@@ -351,9 +354,18 @@ function initMobileMenu() {
   bMenu.onclick = () => toggle();
   if (backdrop) backdrop.onclick = () => toggle(false);
 
-  // Close drawer when a nav link is clicked
+  // Close drawer when a nav link, close button, or backdrop is clicked
   nav.addEventListener("click", e => {
-    if (e.target.closest("a")) toggle(false);
+    if (e.target.closest("a") || e.target.closest("#bMenuClose") || e.target.closest(".nav-drawer-close")) {
+      toggle(false);
+    }
+  });
+
+  // Close on Escape key press
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && nav.classList.contains("is-open")) {
+      toggle(false);
+    }
   });
 }
 
@@ -408,11 +420,11 @@ V.home = () => {
       </div>
 
       <div class="hero-cta-row">
-        <a class="btn pri hero-primary-btn" href="eligibility.html">
+        <a class="btn pri hero-primary-btn" href="/eligibility.html">
           <span>Evaluate Your Eligibility</span>
           ${SVG_ICONS.arrowRight}
         </a>
-        <a class="btn sec-btn hero-assistant-btn" href="assistant.html">
+        <a class="btn sec-btn hero-assistant-btn" href="/assistant.html">
           <img src="/static/img/assistant-avatar.svg" width="22" height="22" alt="Guide">
           <span>Ask Smarth AI Guide</span>
         </a>
@@ -437,7 +449,7 @@ V.home = () => {
     </div>
     <div class="grid cats">
       ${Object.entries(D.cats).map(([k, v]) => `
-        <a class="card tile modern-tile" href="schemes.html?cat=${encodeURIComponent(k)}">
+        <a class="card tile modern-tile" href="/schemes.html?cat=${encodeURIComponent(k)}">
           <div class="tile-icon-box">${ICON[k] || "🏛️"}</div>
           <div class="tile-content">
             <b class="tile-name">${esc(v)}</b>
@@ -456,7 +468,7 @@ V.home = () => {
     </div>
     <div class="chips profile-chips">
       ${Object.keys(GL).map(k => `
-        <a class="chip modern-chip" href="schemes.html?who=${encodeURIComponent(k)}">
+        <a class="chip modern-chip" href="/schemes.html?who=${encodeURIComponent(k)}">
           <span class="chip-avatar">${GI[k]}</span>
           <span class="chip-label">${esc(gl(k))}</span>
           <span class="chip-count">${D.schemes.filter(s => whoOf(s).includes(k)).length}</span>
@@ -472,8 +484,8 @@ V.home = () => {
     </div>
     <div class="grid tools-grid">
       ${[
-        ["compare.html", "Compare Schemes", "Put two or three schemes side by side: compare financial benefits, eligibility criteria, and common required documents.", SVG_ICONS.compare, "Open Comparison Matrix ➔"],
-        ["checklist.html", "Document Readiness Checker", "Tick the documents you have on hand and resolve missing certificate blockers before visiting official portals.", SVG_ICONS.checklist, "Start Readiness Audit ➔"]
+        ["/compare.html", "Compare Schemes", "Put two or three schemes side by side: compare financial benefits, eligibility criteria, and common required documents.", SVG_ICONS.compare, "Open Comparison Matrix ➔"],
+        ["/checklist.html", "Document Readiness Checker", "Tick the documents you have on hand and resolve missing certificate blockers before visiting official portals.", SVG_ICONS.checklist, "Start Readiness Audit ➔"]
       ].map(x => `
         <div class="card modern-tool-card">
           <div class="tool-card-header">
@@ -496,10 +508,10 @@ V.home = () => {
     </div>
     <div class="grid process-grid">
       ${[
-        ["1", "Discover", `Explore ${D.schemes.length} Central & State welfare schemes indexed by department and beneficiary group.`, "schemes.html"],
-        ["2", "Understand", "Read simplified benefits, gazette clause breakdowns, and fine print translated into plain words.", "schemes.html"],
-        ["3", "Check Eligibility", "Verify age, income, category, and residential requirements instantaneously.", "eligibility.html"],
-        ["4", "Apply Officially", "Access direct links to verified .gov.in and .nic.in portals with zero middleman friction.", "schemes.html"]
+        ["1", "Discover", `Explore ${D.schemes.length} Central & State welfare schemes indexed by department and beneficiary group.`, "/schemes.html"],
+        ["2", "Understand", "Read simplified benefits, gazette clause breakdowns, and fine print translated into plain words.", "/schemes.html"],
+        ["3", "Check Eligibility", "Verify age, income, category, and residential requirements instantaneously.", "/eligibility.html"],
+        ["4", "Apply Officially", "Access direct links to verified .gov.in and .nic.in portals with zero middleman friction.", "/schemes.html"]
       ].map(x => `
         <a class="card process-card" href="${x[3]}">
           <div class="step-num-badge">${x[0]}</div>
@@ -539,7 +551,7 @@ V.home.after = () => {
   if (form && input) {
     form.onsubmit = e => {
       e.preventDefault();
-      location.href = "schemes.html?q=" + encodeURIComponent(input.value.trim());
+      location.href = "/schemes.html?q=" + encodeURIComponent(input.value.trim());
     };
     input.addEventListener("input", () => {
       if (clearBtn) clearBtn.style.display = input.value.trim() ? "block" : "none";
@@ -554,7 +566,7 @@ V.home.after = () => {
   }
   $$(".quick-tag").forEach(b => {
     b.onclick = () => {
-      location.href = "schemes.html?q=" + encodeURIComponent(b.dataset.q || b.textContent);
+      location.href = "/schemes.html?q=" + encodeURIComponent(b.dataset.q || b.textContent);
     };
   });
 };
@@ -631,18 +643,23 @@ V.schemes.after = () => {
 
     // Update active filter summary chips
     const activeFilters = [];
-    if (q) activeFilters.push(`Keyword: "<b>${esc(q)}</b>"`);
-    if (c) activeFilters.push(`Category: <b>${esc(D.cats[c] || c)}</b>`);
-    if (l) activeFilters.push(`Level: <b>${esc(l)}</b>`);
-    if (st) activeFilters.push(`State: <b>${esc(st)}</b>`);
-    if (w) activeFilters.push(`Group: <b>${esc(gl(w))}</b>`);
+    if (q) activeFilters.push({ type: "q", label: `Keyword: "<b>${esc(q)}</b>"` });
+    if (c) activeFilters.push({ type: "cat", label: `Category: <b>${esc(D.cats[c] || c)}</b>` });
+    if (l) activeFilters.push({ type: "lvl", label: `Level: <b>${esc(l)}</b>` });
+    if (st) activeFilters.push({ type: "st", label: `State: <b>${esc(st)}</b>` });
+    if (w) activeFilters.push({ type: "who", label: `Group: <b>${esc(gl(w))}</b>` });
 
     if (summaryEl) {
       if (activeFilters.length) {
         summaryEl.innerHTML = `
           <div class="filter-tags-row">
             <span class="filter-count-text">Found <b>${r.length}</b> schemes matching:</span>
-            ${activeFilters.map(f => `<span class="active-filter-pill">${f}</span>`).join("")}
+            ${activeFilters.map(f => `
+              <span class="active-filter-pill">
+                <span>${f.label}</span>
+                <button type="button" class="pill-remove-btn" data-filter-type="${f.type}" title="Remove this filter" aria-label="Remove filter">✕</button>
+              </span>
+            `).join("")}
           </div>
         `;
       } else {
@@ -704,6 +721,20 @@ V.schemes.after = () => {
   const rstBtn = $("#btn-reset-filters");
   if (rstBtn) rstBtn.onclick = resetFilters;
 
+  if (summaryEl) {
+    summaryEl.onclick = e => {
+      const btn = e.target.closest(".pill-remove-btn");
+      if (!btn) return;
+      const type = btn.dataset.filterType;
+      if (type === "q" && qEl) qEl.value = "";
+      if (type === "cat" && $("#cat")) $("#cat").value = "";
+      if (type === "lvl" && $("#lvl")) $("#lvl").value = "";
+      if (type === "st" && $("#st")) $("#st").value = "";
+      if (type === "who" && $("#who")) $("#who").value = "";
+      draw(true);
+    };
+  }
+
   draw(true);
 };
 
@@ -719,7 +750,7 @@ V.scheme = (p, id) => {
 
   return `
   <div class="detail-breadcrumbs">
-    <a href="schemes.html" class="back-link">
+    <a href="/schemes.html" class="back-link">
       <span class="back-arrow">←</span> All Government Schemes
     </a>
   </div>
@@ -751,7 +782,7 @@ V.scheme = (p, id) => {
         ${SVG_ICONS.info}
         <span>Report Issue</span>
       </button>
-      <a class="btn btn-assistant-link" href="assistant.html?q=${encodeURIComponent("Tell me about " + s.name)}">
+      <a class="btn btn-assistant-link" href="/assistant.html?q=${encodeURIComponent("Tell me about " + s.name)}">
         <img src="/static/img/assistant-avatar.svg" width="20" height="20" alt="Guide">
         <span>Ask AI Guide</span>
       </a>
@@ -778,7 +809,7 @@ V.scheme = (p, id) => {
       <h2 class="section-title-sm">Indicative Eligibility Criteria</h2>
       <div id="sc-elig">${L(s.elig)}</div>
       <div style="margin-top:1rem">
-        <a class="btn" href="eligibility.html">
+        <a class="btn" href="/eligibility.html">
           ${SVG_ICONS.eligibility}
           <span>Run Profile Evaluation</span>
         </a>
@@ -788,7 +819,7 @@ V.scheme = (p, id) => {
     <div class="sec modern-detail-section">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <h2 class="section-title-sm" style="margin:0">Required Documents Checklist</h2>
-        <a class="btn btn-quiet" href="checklist.html?id=${encodeURIComponent(s.id)}">
+        <a class="btn btn-quiet" href="/checklist.html?id=${encodeURIComponent(s.id)}">
           ${SVG_ICONS.checklist}
           <span>Open Interactive Checklist</span>
         </a>
@@ -808,7 +839,7 @@ V.scheme = (p, id) => {
           ${SVG_ICONS.copy}
           <span>Copy Portal URL</span>
         </button>
-        <a class="btn btn-audit" href="feedback.html?sid=${encodeURIComponent(s.id)}">
+        <a class="btn btn-audit" href="/feedback.html?sid=${encodeURIComponent(s.id)}">
           ${SVG_ICONS.feedback}
           <span>Submit On-Ground Audit</span>
         </a>
@@ -823,7 +854,7 @@ V.scheme = (p, id) => {
         <h2 class="section-title-sm" style="margin:0">
           ⚖️ Clause-by-Clause Policy Breakdown &amp; Fine Print (बारीकियाँ &amp; छिपी शर्तें)
         </h2>
-        <a class="btn btn-quiet" href="feedback.html?sid=${encodeURIComponent(s.id)}">
+        <a class="btn btn-quiet" href="/feedback.html?sid=${encodeURIComponent(s.id)}">
           <span>📝 Submit Feedback</span>
         </a>
       </div>
@@ -856,7 +887,7 @@ V.scheme.after = (p, id) => {
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       if (!d) return;
-      if (d.benefits && $("#sc-ben")) $("#sc-ben").textContent = d.benefits;
+      if (d.benefits && $("#sc-ben")) $("#sc-ben").innerHTML = fmtBenefit(d.benefits);
       if (d.how_to_apply && $("#sc-apply")) $("#sc-apply").textContent = d.how_to_apply;
       if (d.eligibility?.length && $("#sc-elig")) {
         $("#sc-elig").innerHTML = `<ul class="detail-list">${d.eligibility.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
@@ -1013,15 +1044,15 @@ const navCmd = q => {
   }
   if (!/open|go to|take me|show me page|kholo|khol|खोल|दिखा|जाओ|le chalo/.test(l)) return null;
   const m = [
-    [/compar|तुलना|tulna/, "compare.html", "Opening scheme compare tool."],
-    [/checklist|readiness|document|दस्तावेज|दस्तावेज़/, "checklist.html", "Opening document readiness checker."],
-    [/eligib|पात्र/, "eligibility.html", "Opening eligibility checker."],
-    [/dashboard|डैशबोर्ड/, "dashboard.html", "Opening your dashboard."],
-    [/admin|एडमिन/, "admin.html", "Opening admin command center."],
-    [/feedback|प्रतिक्रिया/, "feedback.html", "Opening feedback audit."],
-    [/service|सेवा/, "services.html", "Opening services directory."],
-    [/home|होम/, "index.html", "Going to home page."],
-    [/scheme|yojana|योजना/, "schemes.html", "Opening all schemes directory."]
+    [/compar|तुलना|tulna/, "/compare.html", "Opening scheme compare tool."],
+    [/checklist|readiness|document|दस्तावेज|दस्तावेज़/, "/checklist.html", "Opening document readiness checker."],
+    [/eligib|पात्र/, "/eligibility.html", "Opening eligibility checker."],
+    [/dashboard|डैशबोर्ड/, "/dashboard.html", "Opening your dashboard."],
+    [/admin|एडमिन/, "/admin.html", "Opening admin command center."],
+    [/feedback|प्रतिक्रिया/, "/feedback.html", "Opening feedback audit."],
+    [/service|सेवा/, "/services.html", "Opening services directory."],
+    [/home|होम/, "/index.html", "Going to home page."],
+    [/scheme|yojana|योजना/, "/schemes.html", "Opening all schemes directory."]
   ].find(x => x[0].test(l));
   return m ? { say: m[2], run: () => location.href = m[1] } : null;
 };
@@ -1061,7 +1092,7 @@ const answer = q => {
     .slice(0, 3);
   if (sc.length) {
     return (hi ? "ये सरकारी योजनाएँ आपके प्रश्न से मेल खाती हैं:\n\n" : "Here are matching government schemes:\n\n") +
-      sc.map(([s]) => `• **${s.name}**: ${s.benefit} ([View Details](scheme.html?id=${s.id}))`).join("\n") +
+      sc.map(([s]) => `• **${s.name}**: ${s.benefit} ([View Details](/scheme.html?id=${s.id}))`).join("\n") +
       (hi ? "\n\nपूर्ण विवरण के लिए संबंधित योजना लिंक खोलें।" : "\n\nOpen any scheme page for complete eligibility and application steps.");
   }
   for (const [c, w] of Object.entries(kw)) {
@@ -1313,7 +1344,14 @@ V.assistant.after = p => {
       S.set("chat", []);
       if ("speechSynthesis" in window) speechSynthesis.cancel();
       if (ci) ci.value = "";
-      draw();
+      const initTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      add(
+        "b",
+        "नमस्ते! मैं **Smarth AI Guide** हूँ। भारत सरकार या राज्य सरकारों की किसी भी योजना (PM-KISAN, आयुष्मान भारत, पीएम आवास, मुद्रा लोन, पीएम सूर्य घर) के लाभ, पात्रता और दस्तावेज़ों के बारे में बेझिझक पूछें।\n\nआप नीचे दिए गए त्वरित विकल्पों पर क्लिक कर सकते हैं या सीधे अपना सवाल लिख सकते हैं।",
+        "Smarth AI Knowledge Base",
+        false,
+        initTime
+      );
       toast("Chat conversation cleared");
     };
   }
@@ -1562,7 +1600,7 @@ const ckOverview = () => {
       return `
         <div class="sec ck-progress-card">
           <div class="ckrow">
-            <a href="checklist.html?id=${encodeURIComponent(s.id)}"><b>${esc(s.name)}</b></a>
+            <a href="/checklist.html?id=${encodeURIComponent(s.id)}"><b>${esc(s.name)}</b></a>
             <span class="mu">${d}/${n} documents ready · <b>${pct}%</b></span>
           </div>
           ${pbar(pct)}
@@ -1656,7 +1694,7 @@ V.checklist.after = () => {
       res.innerHTML = `<div class="sec empty-sec"><p class="mu">Select a government scheme from the dropdown above to view its required documents.</p></div>`;
       return;
     }
-    pushUrl(`checklist.html?id=${encodeURIComponent(cur.id)}`);
+    pushUrl(`/checklist.html?id=${encodeURIComponent(cur.id)}`);
     const t = CK()[cur.id] || [];
 
     res.innerHTML = `
@@ -1697,8 +1735,8 @@ V.checklist.after = () => {
           <span>Go to Official Website</span>
           ${SVG_ICONS.external}
         </a>
-        <a class="btn" href="scheme.html?id=${encodeURIComponent(cur.id)}">Scheme Details</a>
-        <a class="btn" href="compare.html?a=${encodeURIComponent(cur.id)}">⚖️ Compare with another</a>
+        <a class="btn" href="/scheme.html?id=${encodeURIComponent(cur.id)}">Scheme Details</a>
+        <a class="btn" href="/compare.html?a=${encodeURIComponent(cur.id)}">⚖️ Compare with another</a>
       </div>
       <p class="mu" style="font-size:0.85rem;margin-top:1rem">
         This document checklist is based on standard official ministry guidelines. The nodal officer or portal may request state-specific verifications.
@@ -1716,7 +1754,9 @@ V.checklist.after = () => {
   const sv = $("#ksv");
   if (sv) {
     sv.onclick = e => {
-      const id = e.target.dataset.id;
+      const btn = e.target.closest("[data-id]");
+      if (!btn) return;
+      const id = btn.dataset.id;
       if (!id) return;
       ks.value = id;
       show(id);
@@ -1727,7 +1767,7 @@ V.checklist.after = () => {
 
 /* 7.7 Compare Schemes View */
 const cmpIds = () => S.get("cmp", []).filter((x, i, r) => x && byId(x) && r.indexOf(x) === i).slice(0, 3);
-const cmpUrl = ids => "compare.html" + (ids.length ? "?" + ids.map((x, i) => "abc"[i] + "=" + encodeURIComponent(x)).join("&") : "");
+const cmpUrl = ids => "/compare.html" + (ids.length ? "?" + ids.map((x, i) => "abc"[i] + "=" + encodeURIComponent(x)).join("&") : "");
 
 const cmpTable = T => {
   const L = r => `<ul class="detail-list">${r.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
@@ -1753,8 +1793,8 @@ const cmpTable = T => {
     ["Official Portal", s => `<a class="btn btn-quiet" href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">Open Portal ↗</a>`],
     ["Next Step", s => `
       <div style="display:flex;flex-direction:column;gap:6px">
-        <a class="btn pri" href="scheme.html?id=${encodeURIComponent(s.id)}">Full Details</a>
-        <a class="btn" href="checklist.html?id=${encodeURIComponent(s.id)}">📑 Audit Documents</a>
+        <a class="btn pri" href="/scheme.html?id=${encodeURIComponent(s.id)}">Full Details</a>
+        <a class="btn" href="/checklist.html?id=${encodeURIComponent(s.id)}">📑 Audit Documents</a>
       </div>
     `]
   ];
@@ -1781,7 +1821,7 @@ const cmpTable = T => {
       <thead>
         <tr>
           <th>Attribute</th>
-          ${T.map(s => `<th><a href="scheme.html?id=${encodeURIComponent(s.id)}" class="cmp-col-title">${esc(s.name)}</a></th>`).join("")}
+          ${T.map(s => `<th><a href="/scheme.html?id=${encodeURIComponent(s.id)}" class="cmp-col-title">${esc(s.name)}</a></th>`).join("")}
         </tr>
       </thead>
       <tbody>
@@ -1858,7 +1898,7 @@ V.compare.after = () => {
       res.innerHTML = `
         <div class="sec empty-sec">
           <p class="mu">Select at least two welfare schemes above (or tick "Compare" on scheme cards) to render the side-by-side comparison table.</p>
-          <a class="btn pri" href="schemes.html" style="margin-top:0.8rem">Browse Schemes Catalog</a>
+          <a class="btn pri" href="/schemes.html" style="margin-top:0.8rem">Browse Schemes Catalog</a>
         </div>`;
       return;
     }
@@ -1873,7 +1913,10 @@ V.compare.after = () => {
     if (cpl) {
       cpl.onclick = async () => {
         try {
-          await navigator.clipboard.writeText(location.href.split(/[?#]/)[0] + cmpUrl(ids).slice(11));
+          const shareUrl = new URL(location.href);
+          shareUrl.pathname = "/compare.html";
+          shareUrl.search = ids.length ? "?" + ids.map((x, i) => "abc"[i] + "=" + encodeURIComponent(x)).join("&") : "";
+          await navigator.clipboard.writeText(shareUrl.toString());
           toast("Comparison link copied to clipboard");
         } catch {
           toast("Copy failed");
@@ -1894,7 +1937,9 @@ V.compare.after = () => {
   const pr = $("#cpairs");
   if (pr) {
     pr.onclick = e => {
-      const d = e.target.dataset;
+      const btn = e.target.closest("[data-a]");
+      if (!btn) return;
+      const d = btn.dataset;
       if (!d.a) return;
       if (sel[0]) sel[0].value = d.a;
       if (sel[1]) sel[1].value = d.b;
@@ -1953,7 +1998,7 @@ V.dashboard = () => {
   </div>
   <div class="chips">
     ${searches.length
-      ? searches.map(x => `<a class="chip modern-chip" href="schemes.html?q=${encodeURIComponent(x)}">🔍 ${esc(x)}</a>`).join("")
+      ? searches.map(x => `<a class="chip modern-chip" href="/schemes.html?q=${encodeURIComponent(x)}">🔍 ${esc(x)}</a>`).join("")
       : "<span class='mu'>No recent searches recorded</span>"
     }
   </div>
@@ -2630,7 +2675,7 @@ V.nf = () => `
   <h1>404 – Page Not Found</h1>
   <p class="mu">The requested scheme or page could not be located in the national directory.</p>
   <div style="margin-top:1.5rem">
-    <a class="btn pri" href="index.html">Return to Portal Home</a>
+    <a class="btn pri" href="/index.html">Return to Portal Home</a>
   </div>
 </div>`;
 
@@ -2704,46 +2749,21 @@ function fx() {
 
 function ui3d() {
   const root = document.documentElement,
-    fine = matchMedia("(pointer:fine)").matches,
     calm = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
-  if (fine && !calm) {
-    const dot = document.createElement("div"), ring = document.createElement("div");
-    dot.id = "cdot";
-    ring.id = "cring";
-    document.body.append(dot, ring);
-    let rx = 0, ry = 0;
-
-    (function t() {
-      rx += (M.x - rx) * .18;
-      ry += (M.y - ry) * .18;
-      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-      requestAnimationFrame(t);
-    })();
-
-    addEventListener("mousemove", e => {
-      M.x = e.clientX;
-      M.y = e.clientY;
-      dot.style.transform = `translate(${M.x}px,${M.y}px) translate(-50%,-50%)`;
-      root.style.setProperty("--px", (e.clientX / innerWidth - .5).toFixed(3));
-      root.style.setProperty("--py", (e.clientY / innerHeight - .5).toFixed(3));
-      ring.classList.toggle("hot", !!e.target.closest("a,button,input,select,textarea,summary,.card"));
-
-      const el = e.target.closest(".card");
-      if (ui3d.last && ui3d.last !== el) ui3d.last.style.transform = "";
-      ui3d.last = el;
-      if (el) {
-        const r = el.getBoundingClientRect(),
-          px = (e.clientX - r.left) / r.width,
-          py = (e.clientY - r.top) / r.height;
-        el.style.transform = `perspective(800px) rotateX(${((.5 - py) * 8).toFixed(1)}deg) rotateY(${((px - .5) * 10).toFixed(1)}deg) translateZ(6px)`;
+  // Subtle hardware-accelerated ambient parallax coordinates without jittery 3D card tilt or custom cursor DOM lag
+  if (!calm) {
+    let ticking = false;
+    window.addEventListener("mousemove", e => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          root.style.setProperty("--px", ((e.clientX / innerWidth) - 0.5).toFixed(3));
+          root.style.setProperty("--py", ((e.clientY / innerHeight) - 0.5).toFixed(3));
+          ticking = false;
+        });
+        ticking = true;
       }
-    });
-
-    document.addEventListener("mouseleave", () => {
-      M.x = M.y = -999;
-      if (ui3d.last) ui3d.last.style.transform = "";
-    });
+    }, { passive: true });
   }
 
   const io = new IntersectionObserver(es => {
@@ -2759,7 +2779,10 @@ function ui3d() {
     n.classList.add("rv");
     io.observe(n);
   });
-  new MutationObserver(mark).observe($("#main"), { childList: true, subtree: true });
+  const mainNode = $("#main");
+  if (mainNode) {
+    new MutationObserver(mark).observe(mainNode, { childList: true, subtree: true });
+  }
   mark();
 }
 
@@ -2837,7 +2860,7 @@ const cbar = () => {
   }
   b.innerHTML = `
     <span class="cbar-count"><b>${n}</b> selected for comparison</span>
-    <a class="btn pri btn-cbar-go" href="compare.html">${t("compare")}</a>
+    <a class="btn pri btn-cbar-go" href="/compare.html">${t("compare")}</a>
     <button id="cx" class="btn-cbar-close" title="Clear comparison selection">✕</button>
   `;
   const cx = $("#cx");
@@ -2845,6 +2868,7 @@ const cbar = () => {
     cx.onclick = () => {
       S.set("cmp", []);
       $$("[data-cmp]").forEach(i => i.checked = false);
+      $$(".card-selected-cmp").forEach(c => c.classList.remove("card-selected-cmp"));
       cbar();
     };
   }
@@ -2860,8 +2884,12 @@ document.addEventListener("change", e => {
       return toast("You can compare up to 3 schemes at once");
     }
     a.push(id);
+    const cardEl = e.target.closest(".card");
+    if (cardEl) cardEl.classList.add("card-selected-cmp");
   } else {
     a = a.filter(x => x !== id);
+    const cardEl = e.target.closest(".card");
+    if (cardEl) cardEl.classList.remove("card-selected-cmp");
   }
   S.set("cmp", a);
   cbar();
@@ -2876,11 +2904,19 @@ function route() {
 
   const navEl = $("#nav");
   if (navEl) {
-    navEl.innerHTML = NAV.map(([h, k]) => {
+    navEl.innerHTML = `
+      <div class="nav-drawer-header">
+        <div class="nav-drawer-title">
+          <img src="/static/img/brand-logo.svg" alt="Smarth AI" width="22" height="22">
+          <span>Navigation Menu</span>
+        </div>
+        <button id="bMenuClose" class="nav-drawer-close" aria-label="Close navigation menu" title="Close menu">✕</button>
+      </div>
+    ` + NAV.map(([h, k]) => {
       const isHome = name === "home" && h === "index";
       const isActive = isHome || name === h;
       return `
-        <a href="${h}.html" class="nav-item ${isActive ? 'on' : ''}">
+        <a href="/${h}.html" class="nav-item ${isActive ? 'on' : ''}">
           <span class="nav-icon">${NI[k] || ""}</span>
           <span class="nav-label">${t(k)}</span>
         </a>
@@ -2889,13 +2925,16 @@ function route() {
   }
 
   const mainEl = $("#main");
-  if (mainEl) {
+  const isServerRendered = mainEl && mainEl.children.length > 0 && !mainEl.hasAttribute("data-spa");
+  if (mainEl && !isServerRendered) {
     mainEl.innerHTML = v(p, id);
     if (v.after) v.after(p, id);
   }
 
   cbar();
-  document.title = "Smarth AI | " + (name === "home" ? "National Government Scheme Guide" : (t(name) || name));
+  if (!isServerRendered) {
+    document.title = "Smarth AI | " + (name === "home" ? "National Government Scheme Guide" : (t(name) || name));
+  }
 }
 
 // Check officer session on startup
