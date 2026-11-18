@@ -17,10 +17,10 @@ whitenoise>=6.6.0
 # Database URL Parser (Supports SQLite & PostgreSQL)
 dj-database-url>=2.1.0
 
-# HTTP Requests Client & SSL handling
+# HTTP Requests Client & SSL Connection Pool
 requests>=2.31.0
 
-# JSON Web Tokens (JWT) for secure Admin authentication
+# Cryptographic JSON Web Tokens (JWT) for Government Admin SSO
 PyJWT>=2.8.0
 
 # PostgreSQL Database Adapter (Production / Cloud Database)
