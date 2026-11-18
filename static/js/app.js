@@ -1,6 +1,15 @@
 "use strict";
 const D = window.DATA, $ = (s, p = document) => p.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => {
+  if (!u) return "#";
+  try {
+    const p = new URL(u, window.location.origin);
+    return (p.protocol === "http:" || p.protocol === "https:") ? p.href : "#";
+  } catch (e) {
+    return "#";
+  }
+};
 const S = { get(k, d) { try { const v = localStorage.getItem("sm_" + k); return v === null ? d : JSON.parse(v) } catch { return d } }, set(k, v) { try { localStorage.setItem("sm_" + k, JSON.stringify(v)) } catch { } } };
 const TX = {
   en: { compare: "Compare", checklist: "Doc Checklist", home: "Home", schemes: "Schemes", eligibility: "Eligibility", assistant: "AI Assistant", services: "Services", feedback: "Feedback", dashboard: "My Dashboard", admin: "Admin", h1: "Discover. Understand. Check eligibility. Apply officially.", sub: "Find Indian government schemes, understand benefits and reach official application portals.", search: "Search schemes…" },
@@ -100,7 +109,7 @@ V.scheme = (p, id) => {
 <div class="sec"><h2>Benefits</h2><p id="sc-ben" class="ben">${esc(s.benefit)}</p></div>
 <div class="sec"><h2>Eligibility (indicative)</h2><div id="sc-elig">${L(s.elig)}</div></div>
 <div class="sec"><h2>Documents</h2><div id="sc-docs">${L(s.docs)}</div></div>
-<div class="sec"><h2>How to apply</h2><p id="sc-apply">${esc(s.apply)}</p><div class="row"><a class="btn pri" id="sc-url" href="${s.url}" target="_blank" rel="noopener noreferrer">Official website ↗</a><button id="cp">Copy link</button><a class="btn" href="feedback.html?sid=${s.id}" style="background:#0b5351;color:#fff">📝 Policy Audit & Experience</a></div>
+<div class="sec"><h2>How to apply</h2><p id="sc-apply">${esc(s.apply)}</p><div class="row"><a class="btn pri" id="sc-url" href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">Official website ↗</a><button id="cp">Copy link</button><a class="btn" href="feedback.html?sid=${s.id}" style="background:#0b5351;color:#fff">📝 Policy Audit & Experience</a></div>
 <p class="mu">Details can change. Confirm everything on the official site before applying.</p></div>
 <div class="sec" id="sc-breakdown-sec">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
@@ -182,7 +191,7 @@ V.eligibility.after = () => {
     e.preventDefault(); const f = new FormData(e.target), u = { age: +f.get("age"), gender: f.get("gender"), occ: f.get("occ"), income: +f.get("income") };
     const rs = D.schemes.map(s => ({ s, m: check(s, u) })), ok = rs.filter(x => !x.m.length), no = rs.filter(x => x.m.length);
     push("elig", { t: new Date().toLocaleString("en-IN"), age: u.age, occ: OCC[u.occ], n: ok.length }, 8);
-    $("#res").innerHTML = `<h2>${ok.length} possible match${ok.length === 1 ? "" : "es"}</h2>` + (ok.map(({ s }) => `<div class="sec ok"><h3><a href="scheme.html?id=${s.id}">${esc(s.name)}</a></h3><p>${esc(s.benefit)}</p><p class="mu">Documents: ${esc(s.docs.join(", "))}</p><a href="${s.url}" target="_blank" rel="noopener noreferrer">Official site ↗</a></div>`).join("") || "<p>No match found.</p>") +
+    $("#res").innerHTML = `<h2>${ok.length} possible match${ok.length === 1 ? "" : "es"}</h2>` + (ok.map(({ s }) => `<div class="sec ok"><h3><a href="scheme.html?id=${s.id}">${esc(s.name)}</a></h3><p>${esc(s.benefit)}</p><p class="mu">Documents: ${esc(s.docs.join(", "))}</p><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">Official site ↗</a></div>`).join("") || "<p>No match found.</p>") +
       `<details><summary>Not matching (${no.length})</summary>${no.map(({ s, m }) => `<div class="sec no"><b>${esc(s.name)}</b><ul>${m.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}</details>`; $("#res").scrollIntoView({ behavior: "smooth" })
   }
 };
@@ -890,7 +899,7 @@ const cmpTable = T => {
   const common = docList(T[0]).filter(d => realDoc(d) && all.includes(dkey(d)));
   const dl = s => `<ul>${docList(s).map(d => `<li>${esc(d)}${realDoc(d) && all.includes(dkey(d)) ? ' <span class="tag cm">common</span>' : ""}</li>`).join("")}</ul>`;
   const cats = [...new Set(T.map(s => s.cat))];
-  const R = [["Who it is for", s => whoOf(s).map(gl).join(", ")], ["Department", s => esc(s.dept)], ["Benefit", s => `<span class="ben">${esc(s.benefit)}</span>`], ["About", s => esc(s.desc)], ["Eligibility", s => L(s.elig)], ["Indicative criteria", s => L(crit(s))], ["Documents", dl], ["How to apply", s => esc(s.apply)], ["Official site", s => `<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>`], ["Next step", s => `<div class="row"><a class="btn" href="scheme.html?id=${encodeURIComponent(s.id)}">Full details</a><a class="btn" href="checklist.html?id=${encodeURIComponent(s.id)}">📑 Check documents</a></div>`]];
+  const R = [["Who it is for", s => whoOf(s).map(gl).join(", ")], ["Department", s => esc(s.dept)], ["Benefit", s => `<span class="ben">${esc(s.benefit)}</span>`], ["About", s => esc(s.desc)], ["Eligibility", s => L(s.elig)], ["Indicative criteria", s => L(crit(s))], ["Documents", dl], ["How to apply", s => esc(s.apply)], ["Official site", s => `<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>`], ["Next step", s => `<div class="row"><a class="btn" href="scheme.html?id=${encodeURIComponent(s.id)}">Full details</a><a class="btn" href="checklist.html?id=${encodeURIComponent(s.id)}">📑 Check documents</a></div>`]];
   return `<div class="sec ok"><h2>Quick summary</h2><p>${cats.length === 1 ? `All selected schemes are in the <b>${esc(D.cats[cats[0]] || cats[0])}</b> category.` : `These schemes are in different categories: ${cats.map(c => esc(D.cats[c] || c)).join(", ")}.`}</p>
 <p>${common.length ? `<b>${common.length} common document${common.length > 1 ? "s" : ""}:</b> ${esc(common.join(", "))}. Collect these once and use them for all.` : "No common documents are listed. Each scheme needs its own set."}</p></div>
 <div style="overflow:auto"><table class="ct"><tr><th></th>${T.map(s => `<th><a href="scheme.html?id=${encodeURIComponent(s.id)}">${esc(s.name)}</a></th>`).join("")}</tr>${R.map(([n, f]) => `<tr><th>${n}</th>${T.map(s => `<td>${f(s)}</td>`).join("")}</tr>`).join("")}</table></div>

@@ -2,37 +2,65 @@ import json
 import os
 from django.conf import settings
 from django.contrib import admin
+from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from django.urls import include, path, re_path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import RedirectView
 from django.views.static import serve
+from feedback.services import hash_ip
 from policies.chat_service import ask_smarth_ai, generate_deep_policy_breakdown
 from policies.ingestion.sync import run_scheme_sync
 from policies.models import Policy
+
+
+MAX_PROMPT_LENGTH = 1000
+MAX_HISTORY_ITEMS = 6
+CHAT_RATE_LIMIT_PER_MINUTE = 25
 
 
 @csrf_exempt
 def chat_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
+
+    ip_key = f"chat_rl_{hash_ip(request)}"
+    current_requests = cache.get(ip_key, 0)
+    if current_requests >= CHAT_RATE_LIMIT_PER_MINUTE:
+        return JsonResponse({
+            "error": "Rate limit exceeded. Please wait a moment before sending more messages."
+        }, status=429)
+    cache.set(ip_key, current_requests + 1, timeout=60)
+
     try:
         data = json.loads(request.body.decode("utf-8"))
     except Exception:
         data = request.POST
 
     prompt = (data.get("prompt") or data.get("message") or "").strip()
-    history = data.get("history", [])
-
     if not prompt:
         return JsonResponse({"error": "Prompt is required"}, status=400)
 
-    result = ask_smarth_ai(prompt, history=history)
+    if len(prompt) > MAX_PROMPT_LENGTH:
+        return JsonResponse({
+            "error": f"Prompt exceeds maximum allowed length of {MAX_PROMPT_LENGTH} characters."
+        }, status=400)
+
+    raw_history = data.get("history", [])
+    safe_history = []
+    if isinstance(raw_history, list):
+        for item in raw_history[-MAX_HISTORY_ITEMS:]:
+            if isinstance(item, dict) and "role" in item and "content" in item:
+                safe_history.append({
+                    "role": "user" if item["role"] == "user" else "model",
+                    "content": str(item["content"])[:MAX_PROMPT_LENGTH]
+                })
+
+    result = ask_smarth_ai(prompt, history=safe_history)
     return JsonResponse(result)
 
 
-@csrf_exempt
 def sync_schemes_api(request):
     if request.method == "GET":
         total = Policy.objects.count()
@@ -54,14 +82,21 @@ def sync_schemes_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "GET or POST method required"}, status=405)
 
+    if not (request.user.is_authenticated and request.user.is_staff):
+        return JsonResponse({"error": "Unauthorized: Staff credentials required"}, status=403)
+
     try:
         data = json.loads(request.body.decode("utf-8"))
     except Exception:
         data = request.POST
 
+    allowed_sources = {"national", "curated", "data_gov", "apisetu", "mygov", "feeds", "all"}
     source = data.get("source", "all")
+    if source not in allowed_sources:
+        return JsonResponse({"error": "Invalid source identifier"}, status=400)
+
     try:
-        limit = int(data.get("limit", 10))
+        limit = max(1, min(int(data.get("limit", 10)), 50))
     except (ValueError, TypeError):
         limit = 10
     use_ai = bool(data.get("use_ai", True))

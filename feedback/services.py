@@ -8,8 +8,13 @@ from .models import Feedback
 
 
 def hash_ip(request):
-    ip = request.META.get("REMOTE_ADDR", "")
-    return hashlib.sha256(f"{settings.SECRET_KEY}:{ip}".encode()).hexdigest()
+    raw_ip = request.META.get("HTTP_X_FORWARDED_FOR")
+    if raw_ip:
+        ip = raw_ip.split(",")[0].strip()
+    else:
+        ip = request.META.get("REMOTE_ADDR", "127.0.0.1")
+    salt = settings.SECRET_KEY[:32] if getattr(settings, "SECRET_KEY", None) else "default-salt-key"
+    return hashlib.sha256(f"{salt}:{ip}".encode("utf-8")).hexdigest()
 
 
 def is_rate_limited(ip_hash):

@@ -1,8 +1,10 @@
 import ast
 import csv
+import ipaddress
 import json
 import logging
 import os
+import socket
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -12,6 +14,35 @@ from django.utils.text import slugify
 logger = logging.getLogger(__name__)
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SmarthAI-PolicyPortal/1.0"
+ALLOWED_SCHEMES = {"http", "https"}
+BLOCKED_HOSTS = {"169.254.169.254", "localhost", "127.0.0.1", "0.0.0.0"}
+
+
+def safe_urlopen(req, timeout=10):
+    """
+    Validates URL scheme and resolves target hostname to ensure it does not
+    hit internal/private/loopback IPs or cloud metadata services (SSRF defense).
+    """
+    url = req.full_url if hasattr(req, "full_url") else str(req)
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme.lower() not in ALLOWED_SCHEMES:
+        raise ValueError(f"Disallowed scheme: {parsed.scheme}")
+
+    hostname = (parsed.hostname or "").lower()
+    if not hostname or hostname in BLOCKED_HOSTS:
+        raise ValueError(f"Disallowed host: {hostname}")
+
+    try:
+        resolved = socket.getaddrinfo(hostname, None)
+        for item in resolved:
+            ip_str = item[4][0]
+            ip_obj = ipaddress.ip_address(ip_str)
+            if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local:
+                raise ValueError(f"Blocked private network destination: {ip_str}")
+    except socket.gaierror as e:
+        raise ValueError(f"Failed to resolve host {hostname}: {e}")
+
+    return urllib.request.urlopen(req, timeout=timeout)
 
 
 class BaseGovSource:
@@ -41,7 +72,7 @@ class DataGovSource(BaseGovSource):
         url = f"https://api.data.gov.in/catalog/api/v1/search?api-key={self.api_key}&q=scheme&format=json&limit={limit}"
         req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with safe_urlopen(req, timeout=10) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 records = data.get("records") or data.get("data") or []
                 for r in records[:limit]:
@@ -82,7 +113,7 @@ class APISetuMySchemeSource(BaseGovSource):
         }
         req = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with safe_urlopen(req, timeout=10) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 for s in data.get("data", [])[:limit]:
                     schemes.append({
@@ -113,7 +144,7 @@ class MyGovSource(BaseGovSource):
         url = f"https://developers.mygov.in/api/v1/schemes?api_key={self.api_key}&limit={limit}"
         req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with safe_urlopen(req, timeout=10) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 for item in data.get("schemes", [])[:limit]:
                     schemes.append({
@@ -140,7 +171,7 @@ class PIBMinistryFeedSource(BaseGovSource):
         url = "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1"  # PIB Press Releases RSS
         req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
         try:
-            with urllib.request.urlopen(req, timeout=8) as resp:
+            with safe_urlopen(req, timeout=8) as resp:
                 xml_data = resp.read()
                 root = ET.fromstring(xml_data)
                 for item in root.findall(".//item")[:limit]:

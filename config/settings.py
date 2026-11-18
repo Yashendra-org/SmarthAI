@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 try:
     from dotenv import load_dotenv
@@ -9,14 +10,19 @@ except ImportError:  # python-dotenv is optional
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-insecure-key")
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1")
 
-ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.getenv("ALLOWED_HOSTS", ".onrender.com,127.0.0.1,localhost").split(",")
-    if h.strip()
-]
+raw_secret = os.getenv("SECRET_KEY")
+if not raw_secret:
+    if DEBUG:
+        SECRET_KEY = "dev-only-insecure-key-never-use-in-production"
+    else:
+        raise ImproperlyConfigured("CRITICAL: The SECRET_KEY environment variable must be set in production!")
+else:
+    SECRET_KEY = raw_secret
+
+raw_allowed_hosts = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,.onrender.com")
+ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(",") if h.strip()]
 if DEBUG:
     for h in ("testserver", "localhost", "127.0.0.1", "0.0.0.0"):
         if h not in ALLOWED_HOSTS:
@@ -118,6 +124,20 @@ CSRF_TRUSTED_ORIGINS = [
     if origin.strip()
 ]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Production HTTP Security Headers
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SAMESITE = "Lax"
+    SECURE_HSTS_SECONDS = 31536000  # 1 year HSTS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # Project settings
 SENTIMENT_ENGINE = os.getenv("SENTIMENT_ENGINE", "lexicon")

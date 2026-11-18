@@ -2,6 +2,7 @@ import csv
 import json
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
+from django.core.cache import cache
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -9,7 +10,11 @@ from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 
 from feedback.models import Feedback
+from feedback.services import hash_ip
 from policies.models import Department, Policy
+
+MAX_LOGIN_ATTEMPTS = 5
+LOCKOUT_DURATION = 900  # 15 minutes lockout
 
 
 # ==============================================================================
@@ -38,9 +43,18 @@ def auth_status_api(request):
 
 @csrf_exempt
 def auth_login_api(request):
-    """Official Officer / Administrator SSO Login endpoint."""
+    """Official Officer / Administrator SSO Login endpoint with brute-force defense."""
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
+
+    ip_hash = hash_ip(request)
+    lock_key = f"login_lock_{ip_hash}"
+    if cache.get(lock_key):
+        return JsonResponse({
+            "status": "error",
+            "message": "Too many failed attempts. Login is temporarily locked for 15 minutes."
+        }, status=429)
+
     try:
         data = json.loads(request.body.decode("utf-8"))
     except Exception:
@@ -55,6 +69,7 @@ def auth_login_api(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         if user.is_staff or user.is_superuser:
+            cache.delete(f"login_fail_{ip_hash}")
             login(request, user)
             return JsonResponse({
                 "status": "success",
@@ -70,6 +85,19 @@ def auth_login_api(request):
             "status": "error",
             "message": "Access restricted to authorized Ministry Officers and Staff only."
         }, status=403)
+
+    # Increment failure counter
+    fail_key = f"login_fail_{ip_hash}"
+    failed_count = cache.get(fail_key, 0) + 1
+    if failed_count >= MAX_LOGIN_ATTEMPTS:
+        cache.set(lock_key, True, timeout=LOCKOUT_DURATION)
+        cache.delete(fail_key)
+        return JsonResponse({
+            "status": "error",
+            "message": "Maximum login attempts exceeded. Account is locked for 15 minutes."
+        }, status=429)
+    else:
+        cache.set(fail_key, failed_count, timeout=600)
 
     return JsonResponse({"status": "error", "message": "Invalid government credentials. Please check username and password."}, status=401)
 

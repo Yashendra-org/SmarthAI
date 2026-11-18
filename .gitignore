@@ -7,5 +7,6 @@ staticfiles/
 .DS_Store
 *.zip
 policies/ingestion/data/*.csv
+bhagwan*
 
 
