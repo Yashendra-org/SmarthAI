@@ -31,7 +31,7 @@ const GM = { "pm-kisan": ["farmer"], pmfby: ["farmer"], "ab-pmjay": ["everyone",
 const whoOf = s => GM[s.id] || CG[s.cat] || ["everyone"], gl = k => GL[k][lang === "hi" ? 1 : 0];
 const VER = "2026-11-14", ver = () => { const d = Math.floor((Date.now() - new Date(VER)) / 864e5); return d > 90 ? `<span class="vb old">⚠ Last verified ${d} days ago – may be outdated</span>` : `<span class="vb">✔ Verified ${d <= 0 ? "today" : d + " days ago"}</span>` };
 const card = s => `<article class="card"><div class="card-top-row"><div class="ic-badge">${ICON[s.cat] || "📌"}</div><div class="card-tags"><span class="tag lvl">${s.lvl}</span><span class="tag cat">${D.cats[s.cat]}</span>${s.state ? `<span class="tag loc">📍 ${esc(s.state)}</span>` : ""}</div></div><h3>${esc(s.name)}</h3><div class="ben">${esc(s.benefit)}</div><div class="mu dept">${esc(s.dept)}</div><div class="row card-actions"><a class="btn pri" href="scheme.html?id=${s.id}">View Details ➔</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
-const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"]];
+const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"], ["admin", "admin"]];
 let currentOfficerUser = null;
 
 /* Theme / font / language */
@@ -1270,11 +1270,7 @@ document.addEventListener("change", e => { const id = e.target.dataset && e.targ
 /* Router (one page per file) */
 function route() {
   const name = document.body.dataset.page || "home", p = new URLSearchParams(location.search), id = p.get("id"); const v = V[name] || V.nf;
-  const navItems = [...NAV];
-  if (currentOfficerUser && currentOfficerUser.is_staff) {
-    navItems.push(["admin", "admin"]);
-  }
-  $("#nav").innerHTML = navItems.map(([h, k]) => `<a href="${h}.html" class="${name === (h === "index" ? "home" : h) ? "on" : ""}">${NI[k] || ""} ${t(k)}</a>`).join("");
+  $("#nav").innerHTML = NAV.map(([h, k]) => `<a href="${h}.html" class="${name === (h === "index" ? "home" : h) ? "on" : ""}">${NI[k] || ""} ${t(k)}</a>`).join("");
   $("#main").innerHTML = v(p, id); if (v.after) v.after(p, id); const HINT = { schemes: "Search, filter by category and tap any card for full details.", services: "Official government portals. Each card opens the real website in a new tab.", feedback: "Rate a scheme and tell others about your experience.", dashboard: "Your saved schemes and activity on this device." }; const h1 = $("#main h1"); if (h1 && HINT[name]) h1.insertAdjacentHTML("afterend", `<p class="mu hint">${HINT[name]}</p>`); cbar(); document.title = "Smarth AI | " + (name === "home" ? "Government Scheme Guide" : name)
 }
 // Check staff session on startup to refresh officer menu if authenticated

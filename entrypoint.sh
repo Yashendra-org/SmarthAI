@@ -10,6 +10,9 @@ python manage.py collectstatic --noinput
 echo "Loading seed policies if needed..."
 python manage.py load_policies || true
 
+echo "Ensuring admin superuser exists..."
+python manage.py init_admin || true
+
 echo "Starting Gunicorn server..."
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:${PORT:-8000} \
