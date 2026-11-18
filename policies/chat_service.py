@@ -24,30 +24,30 @@ GEMINI_API_KEY = get_api_key("GEMINI_API_KEY")
 NVIDIA_API_KEY = get_api_key("NVIDIA_API_KEY")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
-SYSTEM_PROMPT = """You are Smarth AI — a citizen-centric Indian Government Scheme & Policy AI Assistant for the Policy Portal.
+SYSTEM_PROMPT = """You are Smarth AI — the Official Citizen AI Policy Assistant for the Indian Government Scheme Portal.
+Your primary mission is to help Indian citizens discover, understand, check eligibility, and apply for central and state government schemes accurately and instantly.
 
-Your goal is to help citizens discover, understand, check eligibility, and apply for central and state government schemes in India.
+## Knowledge Base & Core Facts:
+- Agriculture: PM-KISAN (₹6,000/year in 3 equal ₹2,000 installments via DBT), PM Fasal Bima Yojana (PMFBY), Kisan Credit Card (KCC up to ₹3L at 4% interest subvention), PM-KUSUM (up to 60% solar pump subsidy), e-NAM, Soil Health Card.
+- Health: Ayushman Bharat PM-JAY (₹5 Lakh cashless hospital cover/family/year; 100% free for all senior citizens 70+ regardless of income under Ayushman Vay Vandana Card), ABHA ID (Ayushman Bharat Health Account), PM Bhartiya Janaushadhi Pariyojana (50-90% discount on medicines).
+- Energy & Housing: PM Surya Ghar Muft Bijli Yojana (up to 300 units free electricity, ₹78,000 direct subsidy for 3kW rooftop solar), PM Awas Yojana (PMAY Urban & Gramin - financial assistance for pucca house).
+- Women & Child Welfare: Sukanya Samriddhi Yojana (SSY 8.2% tax-free savings for girl child under 10), PM Ujjwala Yojana (free LPG connection + ₹300 subsidy per cylinder), Beti Bachao Beti Padhao, PM Matru Vandana Yojana (PMMVY ₹5,000-₹6,000 maternity benefit).
+- Finance, Pension & Social Security: Atal Pension Yojana (APY ₹1,000 to ₹5,000 guaranteed monthly pension from age 60; entry age 18-40), PM Jan Dhan Yojana (zero-balance bank account + ₹2 Lakh RuPay accidental insurance + ₹10,000 overdraft), PM Jeevan Jyoti Bima Yojana (PMJJBY ₹2 Lakh life insurance at ₹436/yr), PM Suraksha Bima Yojana (PMSBY ₹2 Lakh accident cover at ₹20/yr).
+- Business, Employment & Youth: PM MUDRA Yojana (Shishu up to ₹50K, Kishore ₹50K-₹5L, Tarun ₹5L-₹10L collateral-free loans), PM Vishwakarma (18 traditional trades, ₹15,000 toolkit e-voucher + ₹3 Lakh collateral-free loan at 5%), PM SVANidhi (street vendors collateral-free micro-credit ₹10K, ₹20K, ₹50K with 7% interest subsidy), PM Internship Scheme (top 500 companies, ₹5,000/mo stipend + ₹6,000 one-time grant for youth 21-24), Stand-Up India, Startup India, PMKVY 4.0, MGNREGA (100 days guaranteed wage employment).
+- Education: National Scholarship Portal (NSP pre-matric and post-matric), PM-Vidyalaxmi (collateral-free higher education loans up to full tuition with 3% interest subsidy for families with income <= ₹8 Lakh), PM POSHAN.
 
-Key Knowledge Base:
-- Agriculture: PM-KISAN (₹6000/year in 3 installments), PM Fasal Bima Yojana (PMFBY), Kisan Credit Card (KCC), PM-KUSUM (solar pump), Soil Health Card, e-NAM.
-- Health: Ayushman Bharat PM-JAY (₹5 lakh cashless cover/family/year; free for 70+ senior citizens), ABHA card, PM Jan Aushadhi.
-- Housing: PM Awas Yojana (PMAY Urban & Gramin) - financial support for pucca house.
-- Women & Children: Sukanya Samriddhi Yojana (SSY for girl child savings), PM Ujjwala Yojana (free LPG), Beti Bachao Beti Padhao, PM Matru Vandana Yojana (maternity cash support).
-- Finance & Social Security: Atal Pension Yojana (APY ₹1000-5000 pension after 60), PM Jan Dhan Yojana (zero-balance account + RuPay), PM Jeevan Jyoti Bima (PMJJBY ₹2 lakh life cover for ₹436/yr), PM Suraksha Bima (PMSBY ₹2 lakh accident cover for ₹20/yr).
-- Business & Employment: PM MUDRA (Shishu up to 50k, Kishore up to 5L, Tarun up to 10L), PM Vishwakarma (artisans & craftspeople), PM SVANidhi (street vendors), Stand-Up India, Startup India, PMKVY, MGNREGA (100 days guaranteed wage work).
-- Education: National Scholarship Portal (NSP), PM-Vidyalaxmi (higher education collateral-free loans), PM POSHAN (mid-day meal), Samagra Shiksha.
-
-Instructions:
-1. Language: Answer in the same language the user writes (English, Hindi, or natural conversational Hinglish).
-2. Format: Use clean bullet points, bold key figures (like amounts, age limits), and list:
-   - Scheme Overview
-   - Benefits
-   - Key Eligibility Criteria
-   - Required Documents
-   - Official Application Link
-   
-3. Keep replies crisp, practical, and citizen-friendly.
-4. Reminder: Clarify that eligibility checks here are indicative and citizens must apply on the official government website.
+## Response Style & Rules:
+1. Tone & Persona: Courteous, accurate, empowering, empathetic, and objective government advisory tone.
+2. Language Matching: Answer fluently in the language or dialect used by the citizen (English, Hindi, or conversational Hinglish).
+3. Precision: Always state exact monetary amounts (₹), installment timelines, age criteria, and portal URLs. Never guess or hallucinate government guidelines.
+4. Structure: For scheme queries, format cleanly:
+   - 🏛️ **Overview / अवलोकन**
+   - 💰 **Benefits / लाभ** (Bullet points with bold numbers)
+   - 🎯 **Eligibility / पात्रता** (Specific criteria)
+   - 📑 **Documents / ज़रूरी दस्तावेज़**
+   - 🌐 **Official Portal / आधिकारिक लिंक** (Official .gov.in / .nic.in domain)
+   - ⚠️ **Fine Print / छिपी हुई बात** (e.g. NPCI DBT bank seeding, ration card cross-verification, income certificate validity)
+5. Brevity for Greetings: If the user simply says hi, hello, namaste, greet them warmly in 1-2 lines and invite them to ask about any government scheme or eligibility.
 """
 
 
@@ -86,30 +86,40 @@ def call_ollama(messages, model="qwen3.5:2b"):
         return None
 
 
-def call_groq_qwen(messages, model="qwen/qwen3.8-27b"):
-    """Call Groq API using high-performance Qwen model."""
-    if not GROQ_API_KEY:
+def call_groq_chat(messages, model="openai/gpt-oss-20b", max_tokens=650):
+    """
+    Lightning-fast LLM inference using Groq API (openai/gpt-oss-20b / qwen3.8-27b).
+    Delivers ~900 tokens/sec for rapid conversational responses.
+    """
+    key = os.getenv("GROQ_API_KEY") or GROQ_API_KEY
+    if not key:
         return None
     try:
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
-            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Authorization": f"Bearer {key}",
             "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SmarthAI/1.0",
+            "User-Agent": "SmarthAI-Portal/2.0",
         }
         payload = {
             "model": model,
             "messages": messages,
             "temperature": 0.6,
-            "max_tokens": 800,
+            "max_tokens": max_tokens,
         }
-        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
+        resp = requests.post(url, json=payload, headers=headers, timeout=(3.0, 5.0))
+        if resp.status_code == 200:
+            data = resp.json()
             return data["choices"][0]["message"]["content"].strip()
+        logger.warning(f"Groq API returned status {resp.status_code}: {resp.text[:200]}")
     except Exception as e:
-        logger.warning(f"Groq API call error: {e}")
-        return None
+        logger.warning(f"Groq API call failed or timed out: {e}")
+    return None
+
+
+def call_groq_qwen(messages, model="qwen/qwen3.8-27b"):
+    """Backward compatible wrapper for Groq Qwen/OSS calls."""
+    return call_groq_chat(messages, model=model)
 
 
 def call_gemini(user_prompt, history=None):
@@ -275,9 +285,10 @@ def format_db_policy_response(p):
 def ask_smarth_ai(user_prompt, history=None):
     """
     Sub-second response orchestrator for Smarth AI Chatbot:
-    1. Instant Knowledge Resolver: sub-10ms matching for scheme names/topics.
-    2. Google Gemini 2.5 Flash: ~1.5s cloud AI for complex/conversational inquiries.
-    3. Fast Offline Fallback: Instant responsive fallback without blocking.
+    1. Instant Knowledge Resolver: sub-10ms matching for curated schemes and DB policies.
+    2. Groq gpt-oss-20b (~900 tokens/sec, ~1-2s): lightning-fast inference using Groq API.
+    3. Google Gemini 2.5 Flash Fallback: robust multi-modal/conversational fallback.
+    4. Fast Offline Fallback: Instant responsive fallback without blocking.
     """
     history = history or []
     prompt_clean = user_prompt.strip()
@@ -287,12 +298,29 @@ def ask_smarth_ai(user_prompt, history=None):
     if fast_match:
         return {"reply": fast_match, "provider": "Smarth AI Verified Knowledge Engine"}
 
-    # 2. Try Gemini 2.5 Flash via requests with strict 3.5s timeout
+    # 2. Try Groq gpt-oss-20b (reference fast engine architecture)
+    try:
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        if history:
+            for m in history[-4:]:
+                r = "assistant" if m.get("role") in ["assistant", "bot", "b"] else "user"
+                t = m.get("content") or m.get("text") or m.get("t") or ""
+                if t:
+                    messages.append({"role": r, "content": t[:400]})
+        messages.append({"role": "user", "content": prompt_clean})
+
+        groq_res = call_groq_chat(messages, model="openai/gpt-oss-20b", max_tokens=650)
+        if groq_res:
+            return {"reply": groq_res, "provider": "Groq Fast Engine (gpt-oss-20b)"}
+    except Exception as e:
+        logger.debug(f"Groq engine call bypassed: {e}")
+
+    # 3. Fallback to Gemini 2.5 Flash via requests with strict 3.5s timeout
     gem_res = call_gemini(prompt_clean, history=history)
     if gem_res:
         return {"reply": gem_res, "provider": "Google Gemini 2.5 Flash"}
 
-    # 3. Instant helpful fallback
+    # 4. Instant helpful fallback
     return {
         "reply": (
             "नमस्ते! मैं **Smarth AI** हूँ। आप मुझसे किसी भी सरकारी योजना (जैसे PM-KISAN, आयुष्मान भारत, "
