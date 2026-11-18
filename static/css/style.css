@@ -1423,3 +1423,205 @@ body::before {
     color: #000;
   }
 }
+
+/* Modern Clean Badge & Icon Placements */
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  transform: translateZ(16px);
+}
+
+.ic-badge {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(14, 124, 123, 0.12), rgba(22, 50, 79, 0.06));
+  border: 1px solid rgba(14, 124, 123, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.modern-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tile-icon-box {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.modern-tile:hover .tile-icon-box {
+  transform: scale(1.08);
+  background: #e0f2fe;
+}
+
+.tile-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 24px;
+}
+
+.modern-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: all 0.2s;
+}
+
+.modern-chip:hover {
+  border-color: var(--accent);
+  background: #f0fdfa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(14, 124, 123, 0.12);
+}
+
+.chip-avatar {
+  font-size: 1.25rem;
+}
+
+.chip-count {
+  font-size: 0.78rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+
+.modern-tool-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border-radius: 10px;
+}
+
+.tool-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.tool-icon-circle {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.process-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.process-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.step-num-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.modern-faq {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.modern-faq summary {
+  padding: 14px 18px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  background: #fafbfc;
+}
+
+.modern-faq .faq-body {
+  padding: 14px 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Floating Action Button (FAB) WCAG 48x48 min target */
+.fab {
+  min-width: 52px;
+  min-height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+

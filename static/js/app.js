@@ -23,12 +23,14 @@ const applyAdm = () => { const m = ADM(); D.schemes = [...D.all.filter(s => !m.d
 applyAdm();
 const byId = id => D.schemes.find(s => s.id === id);
 const push = (k, v, max = 10) => { const a = S.get(k, []).filter(x => x !== v && JSON.stringify(x) !== JSON.stringify(v)); a.unshift(v); S.set(k, a.slice(0, max)) };
-const ICON = { agriculture: "🌾", education: "🎓", health: "🩺", housing: "🏠", women: "👩", employment: "💼", finance: "💰", senior: "🧓", social: "🛡️", business: "🏭", rural: "🏘️" }, NI = { compare: "⚖️", checklist: "📑", home: "🏛️", schemes: "📋", eligibility: "✅", assistant: "🎤", services: "🔗", feedback: "⭐", dashboard: "👤", admin: "⚙️" };
+const ICON = { agriculture: "🌾", education: "🎓", health: "🩺", housing: "🏠", women: "👩", employment: "💼", finance: "💰", senior: "🧓", social: "🛡️", business: "🏭", rural: "🏘️" };
+// Placement: Modern clean navigation without clunky inline emojis in top header
+const NI = { compare: "", checklist: "", home: "", schemes: "", eligibility: "", assistant: "", services: "", feedback: "", dashboard: "", admin: "" };
 const GL = { farmer: ["Farmers", "किसान"], student: ["Students", "छात्र"], women: ["Women & girls", "महिलाएँ"], senior: ["Senior citizens", "बुजुर्ग"], worker: ["Workers", "श्रमिक"], business: ["Entrepreneurs", "उद्यमी"], housing: ["Housing seekers", "आवास"], everyone: ["Everyone", "सभी"] }, GI = { farmer: "🌾", student: "🎓", women: "👩", senior: "🧓", worker: "👷", business: "🏭", housing: "🏠", everyone: "🇮🇳" };
 const GM = { "pm-kisan": ["farmer"], pmfby: ["farmer"], "ab-pmjay": ["everyone", "senior"], pmay: ["housing"], ssy: ["women"], pmuy: ["women"], apy: ["worker", "senior"], mudra: ["business"], nsp: ["student"], pmjdy: ["everyone"], pmvishwakarma: ["business", "worker"], pmkvy: ["student", "worker"], mgnrega: ["worker", "farmer"] }, CG = { agriculture: ["farmer"], education: ["student"], women: ["women"], senior: ["senior"], employment: ["worker"], business: ["business"], housing: ["housing"] };
 const whoOf = s => GM[s.id] || CG[s.cat] || ["everyone"], gl = k => GL[k][lang === "hi" ? 1 : 0];
 const VER = "2026-11-14", ver = () => { const d = Math.floor((Date.now() - new Date(VER)) / 864e5); return d > 90 ? `<span class="vb old">⚠ Last verified ${d} days ago – may be outdated</span>` : `<span class="vb">✔ Verified ${d <= 0 ? "today" : d + " days ago"}</span>` };
-const card = s => `<article class="card"><div class="ic">${ICON[s.cat] || "📌"}</div><div><span class="tag">${s.lvl}</span><span class="tag">${D.cats[s.cat]}</span>${s.state ? `<span class="tag" style="background:#e8eaf6;color:#283593;font-weight:600">📍 ${esc(s.state)}</span>` : ""}</div><h3>${esc(s.name)}</h3><div class="ben">${esc(s.benefit)}</div><div class="mu">${esc(s.dept)}</div><div class="row"><a class="btn pri" href="scheme.html?id=${s.id}">Details</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
+const card = s => `<article class="card"><div class="card-top-row"><div class="ic-badge">${ICON[s.cat] || "📌"}</div><div class="card-tags"><span class="tag lvl">${s.lvl}</span><span class="tag cat">${D.cats[s.cat]}</span>${s.state ? `<span class="tag loc">📍 ${esc(s.state)}</span>` : ""}</div></div><h3>${esc(s.name)}</h3><div class="ben">${esc(s.benefit)}</div><div class="mu dept">${esc(s.dept)}</div><div class="row card-actions"><a class="btn pri" href="scheme.html?id=${s.id}">View Details ➔</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
 const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"]];
 let currentOfficerUser = null;
 
@@ -42,16 +44,16 @@ $("#bFontM").onclick = () => { S.set("font", Math.max(13, S.get("font", 16) - 1)
 const V = {};
 V.home = () => {
   const pop = D.schemes.slice(0, 6); return `<section class="hero"><div class="ht"><p class="eyebrow">✦ भारत सरकार एवं राज्य सरकार की योजनाएँ · ${D.schemes.length} official schemes</p><h1>${t("h1")}</h1><p>${t("sub")}</p>
-<form class="bar" id="hs"><input id="hq" placeholder="${t("search")}" aria-label="Search"><button class="pri">Search</button></form>
+<form class="bar" id="hs"><input id="hq" placeholder="Try: 'PM Kisan ₹6000', 'Ayushman 70+', 'Student loan', 'Free Solar'…" aria-label="Search schemes"><button class="pri">Search Schemes</button></form>
 <div class="steps"><span>Discover</span>→<span>Understand</span>→<span>Eligibility</span>→<span>Guidance</span>→<span>Apply</span></div>
-<div class="row"><a class="btn pri" href="eligibility.html">Check eligibility</a><a class="btn" href="assistant.html">🎤 Talk to Smarth AI</a></div></div>
+<div class="row hero-cta-row"><a class="btn pri" href="eligibility.html">Check Your Eligibility ➔</a><a class="btn sec-btn" href="assistant.html">Ask Smarth AI Assistant</a></div></div>
 <div class="stambhwrap"><img src="/static/img/ashoka-stambh.jpg" alt="Ashoka Stambh — National Emblem of India" class="stambh-photo"></div></section>
-<h2>Browse by category</h2><div class="grid cats">${Object.entries(D.cats).map(([k, v]) => `<a class="card tile" href="schemes.html?cat=${k}"><div class="ic">${ICON[k]}</div><b>${v}</b><span class="mu">${D.schemes.filter(s => s.cat === k).length} schemes</span></a>`).join("")}</div>
-<h2>Browse by who you are</h2><div class="chips">${Object.keys(GL).map(k => `<a class="chip" href="schemes.html?who=${k}">${GI[k]} ${gl(k)} (${D.schemes.filter(s => whoOf(s).includes(k)).length})</a>`).join("")}</div>
-<h2>Smart tools</h2><div class="grid"><a class="card tile" href="compare.html"><div class="ic">⚖️</div><b>Compare schemes</b><span class="mu">Put two schemes side by side: benefits, eligibility, documents and process.</span></a><a class="card tile" href="checklist.html"><div class="ic">📑</div><b>Document readiness checker</b><span class="mu">Tick the documents you have and track your progress.</span></a></div>
-<h2>How Smarth AI works</h2><div class="grid">${[["🔍", "1. Discover", `Browse ${D.schemes.length} central & state schemes by category or search.`, "schemes.html"], ["📖", "2. Understand", "Open a scheme to see benefits, documents and steps.", "schemes.html"], ["✅", "3. Check eligibility", "Enter age, income and occupation to see matches.", "eligibility.html"], ["🚀", "4. Apply officially", "Use the official link shown on every scheme page.", "schemes.html"]].map(x => `<a class="card tile" href="${x[3]}"><div class="ic">${x[0]}</div><b>${x[1]}</b><span class="mu">${x[2]}</span></a>`).join("")}</div>
-<h2>Popular schemes</h2><div class="grid">${pop.map(card).join("")}</div>
-<h2>FAQ</h2>${D.faq.map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join("")}`
+<h2>Browse by Category</h2><div class="grid cats">${Object.entries(D.cats).map(([k, v]) => `<a class="card tile modern-tile" href="schemes.html?cat=${k}"><div class="tile-icon-box">${ICON[k]}</div><div class="tile-content"><b>${v}</b><span class="mu">${D.schemes.filter(s => s.cat === k).length} schemes</span></div></a>`).join("")}</div>
+<h2>Browse by Citizen Profile</h2><div class="chips profile-chips">${Object.keys(GL).map(k => `<a class="chip modern-chip" href="schemes.html?who=${k}"><span class="chip-avatar">${GI[k]}</span><span class="chip-label">${gl(k)}</span> <span class="chip-count">${D.schemes.filter(s => whoOf(s).includes(k)).length}</span></a>`).join("")}</div>
+<h2>Citizen Smart Tools</h2><div class="grid">${[["compare.html", "Compare Schemes", "Put two or three schemes side by side: compare financial benefits, eligibility rules, and required documents.", "⚖️", "Open Comparison Tool ➔"], ["checklist.html", "Document Readiness Checker", "Tick the documents you have on hand and verify if you are ready to apply without rejection.", "📑", "Start Readiness Check ➔"]].map(x => `<div class="card modern-tool-card"><div class="tool-card-header"><div class="tool-icon-circle">${x[3]}</div><div><h3 style="margin:0">${x[1]}</h3></div></div><p class="mu">${x[2]}</p><div style="margin-top:auto"><a class="btn pri tool-btn" href="${x[0]}">${x[4]}</a></div></div>`).join("")}</div>
+<h2>How Smarth AI Works</h2><div class="grid process-grid">${[["1", "Discover", `Explore ${D.schemes.length} central & state welfare schemes organized by department and category.`, "schemes.html"], ["2", "Understand", "Read simplified benefits, gazette clause breakdowns, and fine print.", "schemes.html"], ["3", "Check Eligibility", "Verify age, income, category, and residential parameters instantaneously.", "eligibility.html"], ["4", "Apply Officially", "Access direct links to verified .gov.in and .nic.in portals with zero middleman fees.", "schemes.html"]].map(x => `<a class="card process-card" href="${x[3]}"><div class="step-num-badge">${x[0]}</div><b>${x[1]}</b><span class="mu">${x[2]}</span></a>`).join("")}</div>
+<h2>Popular & High-Impact Schemes</h2><div class="grid">${pop.map(card).join("")}</div>
+<h2>Frequently Asked Questions</h2>${D.faq.map(f => `<details class="modern-faq"><summary>${esc(f[0])}</summary><div class="faq-body"><p>${esc(f[1])}</p></div></details>`).join("")}`
 };
 V.home.after = () => { $("#hs").onsubmit = e => { e.preventDefault(); location.href = "schemes.html?q=" + encodeURIComponent($("#hq").value) } };
 
@@ -995,10 +997,15 @@ const STAMBH = `<svg viewBox="0 0 200 330" class="stambh" role="img" aria-label=
 <path d="M58 322h84l-10-26H68z" fill="url(#g)"/><path d="M84 298h32l-4-142H88z" fill="url(#g)"/>${lion(64)}${lion(136)}${lion(100)}<rect x="46" y="134" width="108" height="30" rx="7" fill="url(#g)"/><g transform="translate(100 149) scale(.24)" color="#0e7c7b">${CHAKRA.replace(/<\/?svg[^>]*>/g, "")}</g></svg>`;
 const M = { x: -999, y: -999 };
 function fx() {
-  const c = $("#fx"); if (!c) return; const x = c.getContext("2d"); let W, H;
+  const c = $("#fx"); if (!c) return;
+  // Optimize: Do not start heavy particle animation on mobile screens or if user prefers reduced motion
+  if (matchMedia("(prefers-reduced-motion:reduce)").matches || window.innerWidth < 768) {
+    c.style.display = "none";
+    return;
+  }
+  const x = c.getContext("2d"); let W, H;
   const rs = () => { W = c.width = innerWidth; H = c.height = innerHeight }; rs(); addEventListener("resize", rs);
-  if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-  const P = Array.from({ length: Math.min(45, innerWidth / 18 | 0) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + .5, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, k: Math.random() < .5 }));
+  const P = Array.from({ length: Math.min(32, innerWidth / 24 | 0) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.6 + .4, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25, k: Math.random() < .5 }));
   let active = true;
   document.addEventListener("visibilitychange", () => { active = !document.hidden; if (active) requestAnimationFrame(f) });
   (function f() {
@@ -1006,20 +1013,20 @@ function fx() {
     x.clearRect(0, 0, W, H);
     P.forEach((p, i) => {
       const dx = p.x - M.x, dy = p.y - M.y, d = Math.hypot(dx, dy);
-      if (d < 110) { p.x += dx / d * 1.4; p.y += dy / d * 1.4 }
+      if (d < 110) { p.x += dx / d * 1.2; p.y += dy / d * 1.2 }
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0 || p.x > W) p.vx *= -1;
       if (p.y < 0 || p.y > H) p.vy *= -1;
       for (let k = i + 1; k < P.length; k++) {
         const q = P[k], e = Math.hypot(p.x - q.x, p.y - q.y);
-        if (e < 95) {
-          x.globalAlpha = (1 - e / 95) * .3;
+        if (e < 90) {
+          x.globalAlpha = (1 - e / 90) * .25;
           x.strokeStyle = "#0e7c7b";
           x.shadowBlur = 0;
           x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(q.x, q.y); x.stroke();
         }
       }
-      x.globalAlpha = .35; x.fillStyle = p.k ? "#0e7c7b" : "#16324f";
+      x.globalAlpha = .3; x.fillStyle = p.k ? "#0e7c7b" : "#16324f";
       x.shadowBlur = 0; x.beginPath(); x.arc(p.x, p.y, p.r, 0, 7); x.fill();
     });
     requestAnimationFrame(f);

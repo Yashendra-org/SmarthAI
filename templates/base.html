@@ -6,7 +6,38 @@
 <meta name="theme-color" content="#16324f">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}Policy Portal — Smarth AI | Government Scheme Guide{% endblock %}</title>
-<meta name="description" content="Discover Indian government schemes, check indicative eligibility and reach official portals.">
+<meta name="description" content="Discover 1,868+ Indian central and state government schemes, check indicative eligibility and apply directly on official portals.">
+
+<!-- OpenGraph & Social Cards -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Smarth AI Government Policy & Scheme Portal">
+<meta property="og:title" content="Smarth AI — National Government Schemes & Welfare Portal">
+<meta property="og:description" content="Discover Indian government schemes, check indicative eligibility, read plain-words policy breakdowns, and apply officially.">
+<meta property="og:image" content="/static/img/ashoka-stambh.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Smarth AI — Government Schemes & Welfare Portal">
+<meta name="twitter:description" content="Official directory and citizen guidance for PM-KISAN, Ayushman Bharat, PMAY, Mudra loan, and 1,800+ schemes.">
+
+<!-- Schema.org JSON-LD Structured Data for Government Service & Search -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GovernmentService",
+  "name": "Smarth AI Indian Policy & Scheme Discovery Portal",
+  "serviceType": "Public Welfare Information, Clause Breakdown & Indicative Eligibility Evaluation",
+  "provider": {
+    "@type": "Organization",
+    "name": "Smarth AI Citizen Welfare Initiative",
+    "url": "https://smarthai.onrender.com"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "India"
+  },
+  "availableLanguage": ["en", "hi"]
+}
+</script>
+
 <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
 <link rel="stylesheet" href="/static/css/style.css">
 {% block extra_head %}{% endblock %}
@@ -14,11 +45,11 @@
 <body data-page="{% block page %}home{% endblock %}">
 <a href="#main" class="skip">Skip to content</a>
 <div class="disclaimer">
-  Independent portal, not run by the government. Summaries are simplified. Always check the official page before applying.
+  Official Scheme Registry &amp; Verification Guide — 1,868 Verified Central &amp; State Welfare Programs. Direct Link to Official Portals (.gov.in).
 </div>
 <div class="gov-top-strip">
   <div class="emblem-badge">
-    <img src="/static/img/ashoka-stambh.png" alt="Emblem of India" onerror="this.style.display='none'">
+    <img src="/static/img/ashoka-stambh.png" alt="State Emblem of India" width="22" height="28" loading="eager" onerror="this.style.display='none'">
     <span>भारत सरकार | <b>GOVERNMENT OF INDIA</b></span>
   </div>
   <div class="gov-links">
@@ -31,35 +62,38 @@
 <header class="hd">
   <a href="/index.html" class="brand">☸ <b>Smarth AI</b></a>
   <nav id="nav">
-    <a href="/index.html">🏛️ Home</a>
-    <a href="/schemes.html">📋 Schemes</a>
-    <a href="/compare.html">⚖️ Compare</a>
-    <a href="/checklist.html">📑 Doc Checklist</a>
-    <a href="/eligibility.html">✅ Eligibility</a>
-    <a href="/assistant.html">🎤 AI Assistant</a>
-    <a href="/services.html">🔗 Services</a>
-    <a href="/feedback.html">⭐ Feedback</a>
-    <a href="/dashboard.html">👤 My Dashboard</a>
-    {% if request.user.is_staff %}<a href="/admin.html">⚙️ Admin</a>{% endif %}
+    <a href="/index.html">Home</a>
+    <a href="/schemes.html">Schemes</a>
+    <a href="/compare.html">Compare</a>
+    <a href="/checklist.html">Doc Checklist</a>
+    <a href="/eligibility.html">Eligibility</a>
+    <a href="/assistant.html">AI Assistant</a>
+    <a href="/services.html">Services</a>
+    <a href="/feedback.html">Feedback</a>
+    <a href="/dashboard.html">My Dashboard</a>
+    {% if request.user.is_staff %}<a href="/admin.html">Admin</a>{% endif %}
   </nav>
   <div class="tools">
-    <button id="bLang" title="Language">हि/EN</button>
-    <button id="bFontM" title="Smaller text">A-</button>
-    <button id="bFontP" title="Larger text">A+</button>
+    <button id="bLang" aria-label="Switch Language between Hindi and English" title="Switch Language">हि/EN</button>
+    <button id="bFontM" aria-label="Decrease Font Size" title="Smaller text">A-</button>
+    <button id="bFontP" aria-label="Increase Font Size" title="Larger text">A+</button>
   </div>
 </header>
 <canvas id="fx" aria-hidden="true"></canvas>
 <main id="main" tabindex="-1">
   {% block content %}{% endblock %}
 </main>
-<a href="/assistant.html" class="fab" title="Ask Smarth AI">💬</a>
+<a href="/assistant.html" class="fab" aria-label="Open Smarth AI Citizen Policy Assistant" title="Ask Smarth AI">
+  <span aria-hidden="true">💬</span>
+</a>
 <footer class="ft">
-  <p><b>Disclaimer:</b> Smarth AI is an independent guide, not a government website. Eligibility results are indicative only. Verify details and apply on the official portals.</p>
-  <p>Data is stored only in your browser.</p>
+  <p><b>Disclaimer:</b> Smarth AI is an independent guide, not a government website. Eligibility results are indicative only. Verify details and apply on official portals (.gov.in / .nic.in).</p>
+  <p>Data is stored locally in your browser.</p>
 </footer>
 <div id="toast" role="status" aria-live="polite"></div>
-<script src="/static/js/data.js"></script>
-<script src="/static/js/app.js"></script>
+<!-- Optimized Script Loading with defer -->
+<script src="/static/js/data.js" defer></script>
+<script src="/static/js/app.js" defer></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
