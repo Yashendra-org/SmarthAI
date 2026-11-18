@@ -92,6 +92,50 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 25;
 }
 
+/* Premium Government Official Top Strip */
+.gov-top-strip {
+  background: #0b1d30;
+  color: #e2e8f0;
+  border-bottom: 2px solid #ff9933;
+  padding: 4px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 26;
+}
+.gov-top-strip .emblem-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8fafc;
+}
+.gov-top-strip .emblem-badge img {
+  height: 22px;
+  width: auto;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.4));
+}
+.gov-top-strip .gov-links {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.gov-top-strip .gov-links a {
+  color: #cbd5e1;
+  font-size: 0.78rem;
+}
+.gov-top-strip .gov-links a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.tricolor-accent-line {
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%);
+}
+
 /* Header & Navigation */
 .hd {
   position: sticky;

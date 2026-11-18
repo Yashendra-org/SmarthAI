@@ -20,7 +20,8 @@ const GM = { "pm-kisan": ["farmer"], pmfby: ["farmer"], "ab-pmjay": ["everyone",
 const whoOf = s => GM[s.id] || CG[s.cat] || ["everyone"], gl = k => GL[k][lang === "hi" ? 1 : 0];
 const VER = "2026-11-14", ver = () => { const d = Math.floor((Date.now() - new Date(VER)) / 864e5); return d > 90 ? `<span class="vb old">⚠ Last verified ${d} days ago – may be outdated</span>` : `<span class="vb">✔ Verified ${d <= 0 ? "today" : d + " days ago"}</span>` };
 const card = s => `<article class="card"><div class="ic">${ICON[s.cat] || "📌"}</div><div><span class="tag">${s.lvl}</span><span class="tag">${D.cats[s.cat]}</span>${s.state ? `<span class="tag" style="background:#e8eaf6;color:#283593;font-weight:600">📍 ${esc(s.state)}</span>` : ""}</div><h3>${esc(s.name)}</h3><div class="ben">${esc(s.benefit)}</div><div class="mu">${esc(s.dept)}</div><div class="row"><a class="btn pri" href="scheme.html?id=${s.id}">Details</a><label class="cmp"><input type="checkbox" data-cmp="${s.id}"${S.get("cmp", []).includes(s.id) ? " checked" : ""}> ${t("compare")}</label></div></article>`;
-const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"], ["admin", "admin"]];
+const NAV = [["index", "home"], ["schemes", "schemes"], ["compare", "compare"], ["checklist", "checklist"], ["eligibility", "eligibility"], ["assistant", "assistant"], ["services", "services"], ["feedback", "feedback"], ["dashboard", "dashboard"]];
+let currentOfficerUser = null;
 
 /* Theme / font / language */
 const applyPrefs = () => { document.documentElement.style.fontSize = S.get("font", 16) + "px"; document.documentElement.lang = lang };
@@ -634,9 +635,41 @@ V.dashboard.after = () => {
 
 
 V.admin = () => {
+  if (!currentOfficerUser || !currentOfficerUser.is_staff) {
+    return `<div style="max-width:480px;margin:3rem auto;background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:2.2rem;box-shadow:0 10px 30px rgba(0,0,0,0.08);text-align:center">
+      <div style="font-size:3rem;margin-bottom:.5rem">🏛️</div>
+      <span class="tag" style="background:#fef3c7;color:#92400e;font-weight:700;padding:4px 10px;border-radius:12px;font-size:0.8rem">RESTRICTED GOVERNMENT PORTAL</span>
+      <h2 style="margin:1rem 0 .5rem;color:var(--ink);font-size:1.5rem">Ministry Officer SSO Login</h2>
+      <p class="mu" style="font-size:0.9rem;margin-bottom:1.5rem">This administrative console is restricted to authorized Government Officials, Ministry Department Heads, and Portal System Administrators.</p>
+      <form id="adm-login-form" style="text-align:left;display:flex;flex-direction:column;gap:1rem">
+        <div>
+          <label style="font-weight:600;font-size:.88rem;color:var(--ink);display:block;margin-bottom:.3rem">Officer / Admin Username</label>
+          <input type="text" id="adm-user" placeholder="Enter government staff username" required style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:6px;font-size:.95rem">
+        </div>
+        <div>
+          <label style="font-weight:600;font-size:.88rem;color:var(--ink);display:block;margin-bottom:.3rem">Security Password / Passcode</label>
+          <input type="password" id="adm-pass" placeholder="••••••••••••" required style="width:100%;padding:.65rem;border:1px solid var(--line);border-radius:6px;font-size:.95rem">
+        </div>
+        <div id="adm-login-err" style="display:none;color:#b91c1c;font-size:.85rem;background:#fee2e2;padding:.5rem;border-radius:6px"></div>
+        <button type="submit" id="adm-login-btn" class="btn pri" style="width:100%;padding:.75rem;font-size:1rem;font-weight:600;margin-top:.5rem">Authenticate as Officer ➔</button>
+      </form>
+      <p class="mu" style="font-size:.78rem;margin-top:1.5rem;line-height:1.4">Authorized access under IT Security &amp; Compliance Guidelines. Unofficial attempts are logged under cyber security monitoring.</p>
+    </div>`;
+  }
+
   const m = ADM(), fb = S.get("fb", []), all = [...D.all.filter(s => !m.deleted.includes(s.id)), ...m.custom], c = { Positive: 0, Neutral: 0, Negative: 0 }; fb.forEach(x => c[x.s]++);
-  return `<h1>Admin dashboard</h1><p class="mu">Manage portal schemes, review feedback, or auto-fetch official government schemes using AI.</p>
-<div class="grid">${[["Schemes", all.length], ["Published", all.length - m.hidden.filter(h => all.some(s => s.id === h)).length], ["Feedback", fb.length], ["Positive", c.Positive], ["Neutral", c.Neutral], ["Negative", c.Negative]].map(x => `<div class="card"><span class="mu">${x[0]}</span><h2 style="margin:0">${x[1]}</h2></div>`).join("")}</div>
+  return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line);padding-bottom:1rem">
+    <div>
+      <h1 style="margin:0;display:flex;align-items:center;gap:.6rem"><span>⚙️</span> Officer &amp; Admin Command Center</h1>
+      <p class="mu" style="margin:.3rem 0 0">Logged in as: <b>${esc(currentOfficerUser.username)}</b> (${currentOfficerUser.is_superuser ? "Super Administrator" : "Ministry Officer"})</p>
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <a href="/admin/" target="_blank" class="btn" style="background:#0f172a;color:#fff;border-color:#0f172a;font-size:.85rem">Django Staff Portal ↗</a>
+      <button id="btn-adm-logout" class="btn" style="background:#fee2e2;color:#991b1b;border-color:#fca5a5;font-weight:600;font-size:.85rem">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="grid" id="adm-kpi-grid">${[["Central & State Schemes", all.length], ["Published & Live", all.length - m.hidden.filter(h => all.some(s => s.id === h)).length], ["Citizen Audits", fb.length], ["Positive Perceptions", c.Positive], ["Neutral Evaluations", c.Neutral], ["Negative / Friction", c.Negative]].map(x => `<div class="card"><span class="mu">${x[0]}</span><h2 style="margin:0">${x[1]}</h2></div>`).join("")}</div>
 
 <div class="sec" style="background:rgba(255,255,255,0.96);border:2px solid var(--accent);border-radius:10px;padding:1.4rem;margin:1.5rem 0;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
@@ -709,11 +742,64 @@ V.admin = () => {
 </div>
 
 <div class="sec"><h2>Add scheme manually</h2><form class="f" id="af"><input name="name" placeholder="Scheme name" required><select name="cat">${Object.entries(D.cats).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select><input name="dept" placeholder="Department" required><input name="benefit" placeholder="Main benefit" required><input name="url" type="url" placeholder="Official https:// link" required><textarea name="desc" placeholder="Description" rows="2"></textarea><button class="pri">Add scheme</button></form></div>
-<div class="sec"><h2>Manage schemes</h2><div style="overflow:auto"><table><tr><th>Name</th><th>Category</th><th>Status</th><th></th></tr>${all.map(s => `<tr><td>${esc(s.name)}</td><td>${D.cats[s.cat] || s.cat}</td><td>${m.hidden.includes(s.id) ? "Hidden" : "Live"}</td><td><button data-tg="${s.id}">${m.hidden.includes(s.id) ? "Publish" : "Unpublish"}</button> <button data-rm="${s.id}">Delete</button></td></tr>`).join("")}</table></div></div>
-<div class="sec"><h2>Feedback</h2>${fb.map((x, i) => `<p>${"★".repeat(x.r)} <span class="tag">${x.s}</span> ${esc(x.c)} <button data-fd="${i}">Delete</button></p>`).join("") || "<p class='mu'>No feedback yet.</p>"}</div>
-<div class="sec"><h2>Problem reports</h2>${S.get("reports", []).map((x, i) => `<p><b>${esc(byId(x.sid)?.name || x.sid)}</b> · ${esc(x.t)}: ${esc(x.m)} <button data-rp="${i}">Resolve</button></p>`).join("") || "<p class='mu'>No reports.</p>"}</div>
-<div class="row"><button id="e1">Export schemes CSV</button><button id="e2">Export feedback CSV</button><button id="rs">Reset local data</button></div>`};
+<div class="sec">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem">
+    <h2 style="margin:0">Manage schemes (Central &amp; State Catalog)</h2>
+    <span class="mu" style="font-size:0.85rem">Live Portal Registry</span>
+  </div>
+  <div style="overflow:auto"><table><tr><th>Name</th><th>Category</th><th>Status</th><th>Actions</th></tr>${all.map(s => `<tr><td><b>${esc(s.name)}</b><br><span class="mu" style="font-size:.8rem">${esc(s.dept || "")}</span></td><td>${D.cats[s.cat] || s.cat}</td><td><span class="tag" style="background:${m.hidden.includes(s.id) ? '#fee2e2;color:#991b1b' : '#dcfce7;color:#166534'}">${m.hidden.includes(s.id) ? "Draft / Hidden" : "Published"}</span></td><td><button data-tg="${s.id}">${m.hidden.includes(s.id) ? "Publish" : "Unpublish"}</button> <button data-rm="${s.id}">Delete</button></td></tr>`).join("")}</table></div>
+</div>
+<div class="sec"><h2>Feedback &amp; Citizen Audits</h2>${fb.map((x, i) => `<p>${"★".repeat(x.r)} <span class="tag">${x.s}</span> ${esc(x.c)} <button data-fd="${i}">Delete</button></p>`).join("") || "<p class='mu'>No feedback yet.</p>"}</div>
+<div class="sec"><h2>Citizen Problem Reports</h2>${S.get("reports", []).map((x, i) => `<p><b>${esc(byId(x.sid)?.name || x.sid)}</b> · ${esc(x.t)}: ${esc(x.m)} <button data-rp="${i}">Resolve</button></p>`).join("") || "<p class='mu'>No problem reports pending resolution.</p>"}</div>
+<div class="row"><button id="e1">Export schemes CSV</button><button id="e2">Export feedback CSV</button><button id="rs">Reset local cache</button></div>`};
 V.admin.after = () => {
+  if (!currentOfficerUser || !currentOfficerUser.is_staff) {
+    const lf = $("#adm-login-form");
+    if (lf) {
+      lf.onsubmit = async ev => {
+        ev.preventDefault();
+        const btn = $("#adm-login-btn"), err = $("#adm-login-err");
+        const u = ($("#adm-user")?.value || "").trim(), p = $("#adm-pass")?.value || "";
+        btn.disabled = true; btn.textContent = "Authenticating with Government SSO...";
+        err.style.display = "none";
+        try {
+          const res = await fetch("/dashboard/api/auth/login/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: u, password: p })
+          });
+          const data = await res.json();
+          if (data.status === "success") {
+            currentOfficerUser = data.user;
+            toast("SSO Authenticated successfully! Welcome, " + currentOfficerUser.username);
+            route();
+          } else {
+            err.textContent = data.message || "Invalid government officer credentials.";
+            err.style.display = "block";
+          }
+        } catch (e) {
+          err.textContent = "Connection error. Please try again.";
+          err.style.display = "block";
+        } finally {
+          btn.disabled = false; btn.textContent = "Authenticate as Officer ➔";
+        }
+      };
+    }
+    return;
+  }
+
+  const lo = $("#btn-adm-logout");
+  if (lo) {
+    lo.onclick = async () => {
+      try {
+        await fetch("/dashboard/api/auth/logout/", { method: "POST" });
+      } catch (e) { }
+      currentOfficerUser = null;
+      toast("Officer logged out safely.");
+      route();
+    };
+  }
+
   const sv = m => { S.set("adm", m); applyAdm(); route() }, csv = (n, rows) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = n; a.click(); URL.revokeObjectURL(a.href) };
   const sf = $("#sync-form");
   if (sf) {
@@ -1010,7 +1096,22 @@ document.addEventListener("change", e => { const id = e.target.dataset && e.targ
 /* Router (one page per file) */
 function route() {
   const name = document.body.dataset.page || "home", p = new URLSearchParams(location.search), id = p.get("id"); const v = V[name] || V.nf;
-  $("#nav").innerHTML = NAV.map(([h, k]) => `<a href="${h}.html" class="${name === (h === "index" ? "home" : h) ? "on" : ""}">${NI[k] || ""} ${t(k)}</a>`).join("");
+  const navItems = [...NAV];
+  if (currentOfficerUser && currentOfficerUser.is_staff) {
+    navItems.push(["admin", "admin"]);
+  }
+  $("#nav").innerHTML = navItems.map(([h, k]) => `<a href="${h}.html" class="${name === (h === "index" ? "home" : h) ? "on" : ""}">${NI[k] || ""} ${t(k)}</a>`).join("");
   $("#main").innerHTML = v(p, id); if (v.after) v.after(p, id); const HINT = { schemes: "Search, filter by category and tap any card for full details.", services: "Official government portals. Each card opens the real website in a new tab.", feedback: "Rate a scheme and tell others about your experience.", dashboard: "Your saved schemes and activity on this device." }; const h1 = $("#main h1"); if (h1 && HINT[name]) h1.insertAdjacentHTML("afterend", `<p class="mu hint">${HINT[name]}</p>`); cbar(); document.title = "Smarth AI | " + (name === "home" ? "Government Scheme Guide" : name)
 }
+// Check staff session on startup to refresh officer menu if authenticated
+(async () => {
+  try {
+    const res = await fetch("/dashboard/api/auth/status/");
+    const data = await res.json();
+    if (data.authenticated && data.is_staff) {
+      currentOfficerUser = data;
+      route();
+    }
+  } catch (e) { }
+})();
 applyPrefs(); fx(); route(); intro(); ui3d();

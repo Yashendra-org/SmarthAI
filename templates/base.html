@@ -16,6 +16,18 @@
 <div class="disclaimer">
   Independent portal, not run by the government. Summaries are simplified. Always check the official page before applying.
 </div>
+<div class="gov-top-strip">
+  <div class="emblem-badge">
+    <img src="/static/img/ashoka-stambh.png" alt="Emblem of India" onerror="this.style.display='none'">
+    <span>भारत सरकार | <b>GOVERNMENT OF INDIA</b></span>
+  </div>
+  <div class="gov-links">
+    <span class="hide-sm">National Policy &amp; Welfare Schemes Registry</span>
+    <a href="#main">Skip to Content</a>
+    <a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer">india.gov.in ↗</a>
+  </div>
+</div>
+<div class="tricolor-accent-line"></div>
 <header class="hd">
   <a href="/index.html" class="brand">☸ <b>Smarth AI</b></a>
   <nav id="nav">
@@ -28,7 +40,7 @@
     <a href="/services.html">🔗 Services</a>
     <a href="/feedback.html">⭐ Feedback</a>
     <a href="/dashboard.html">👤 My Dashboard</a>
-    <a href="/admin.html">⚙️ Admin</a>
+    {% if request.user.is_staff %}<a href="/admin.html">⚙️ Admin</a>{% endif %}
   </nav>
   <div class="tools">
     <button id="bLang" title="Language">हि/EN</button>
