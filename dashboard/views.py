@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from feedback.models import Feedback
 from feedback.services import hash_ip
 from policies.models import Department, Policy
+from .jwt_auth import generate_jwt_token, get_user_from_jwt, jwt_or_staff_required
 
 MAX_LOGIN_ATTEMPTS = 5
 LOCKOUT_DURATION = 900  # 15 minutes lockout
@@ -22,8 +23,14 @@ LOCKOUT_DURATION = 900  # 15 minutes lockout
 # ==============================================================================
 
 def auth_status_api(request):
-    """Check whether the current session is authenticated as a government staff/admin."""
+    """Check whether the current session is authenticated as a government staff/admin via session or JWT."""
     user = request.user
+    if not (user.is_authenticated and (user.is_staff or user.is_superuser)):
+        # Check JWT token in headers/cookie
+        jwt_user = get_user_from_jwt(request)
+        if jwt_user:
+            user = jwt_user
+
     if user.is_authenticated and (user.is_staff or user.is_superuser):
         return JsonResponse({
             "authenticated": True,
@@ -43,7 +50,7 @@ def auth_status_api(request):
 
 @csrf_exempt
 def auth_login_api(request):
-    """Official Officer / Administrator SSO Login endpoint with brute-force defense."""
+    """Official Officer / Administrator SSO Login endpoint with JWT issuance & brute-force defense."""
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
 
@@ -71,16 +78,30 @@ def auth_login_api(request):
         if user.is_staff or user.is_superuser:
             cache.delete(f"login_fail_{ip_hash}")
             login(request, user)
-            return JsonResponse({
+            jwt_token = generate_jwt_token(user)
+            resp = JsonResponse({
                 "status": "success",
                 "message": "Officer authentication successful.",
+                "token": jwt_token,
+                "token_type": "Bearer",
                 "user": {
                     "username": user.username,
                     "name": user.get_full_name() or user.username,
                     "is_staff": user.is_staff,
                     "is_superuser": user.is_superuser,
+                    "role": getattr(user, "role", "admin"),
                 }
             })
+            # Set secure HTTP-only cookie for JWT
+            resp.set_cookie(
+                "admin_jwt",
+                jwt_token,
+                max_age=12 * 3600,
+                httponly=True,
+                samesite="Lax",
+                secure=not settings.DEBUG,
+            )
+            return resp
         return JsonResponse({
             "status": "error",
             "message": "Access restricted to authorized Ministry Officers and Staff only."
@@ -104,19 +125,20 @@ def auth_login_api(request):
 
 @csrf_exempt
 def auth_logout_api(request):
-    """Secure logout for staff."""
+    """Secure logout for staff and clears JWT cookie."""
     logout(request)
-    return JsonResponse({"status": "success", "message": "Logged out successfully."})
+    resp = JsonResponse({"status": "success", "message": "Logged out successfully."})
+    resp.delete_cookie("admin_jwt")
+    return resp
 
 
 # ==============================================================================
-# Admin Scheme Management API (Staff Only)
+# Admin Scheme Management API (Staff / Admin JWT Only)
 # ==============================================================================
 
+@jwt_or_staff_required
 def admin_schemes_api(request):
     """List, search, filter or add schemes directly in the database."""
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized: Staff credentials required"}, status=403)
 
     if request.method == "GET":
         q = request.GET.get("q", "").strip()
@@ -209,10 +231,9 @@ def admin_schemes_api(request):
 
 
 @csrf_exempt
+@jwt_or_staff_required
 def admin_scheme_toggle_status(request, slug):
     """Toggle a scheme status between 'published' and 'draft'."""
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized"}, status=403)
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
 
@@ -234,10 +255,9 @@ def admin_scheme_toggle_status(request, slug):
 
 
 @csrf_exempt
+@jwt_or_staff_required
 def admin_scheme_delete(request, slug):
     """Archive or delete a scheme."""
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized"}, status=403)
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
 
@@ -251,13 +271,12 @@ def admin_scheme_delete(request, slug):
 
 
 # ==============================================================================
-# Admin Feedback Moderation API (Staff Only)
+# Admin Feedback Moderation API (Staff / Admin JWT Only)
 # ==============================================================================
 
+@jwt_or_staff_required
 def admin_feedback_api(request):
     """List recent feedback from database with moderation actions."""
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized: Staff credentials required"}, status=403)
 
     if request.method == "GET":
         qs = Feedback.objects.select_related("policy").all().order_by("-created_at")
@@ -303,10 +322,9 @@ def admin_feedback_api(request):
 
 
 @csrf_exempt
+@jwt_or_staff_required
 def admin_feedback_action(request, fb_id):
     """Flag, unflag, or delete feedback."""
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized"}, status=403)
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
 

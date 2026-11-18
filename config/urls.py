@@ -9,6 +9,7 @@ from django.urls import include, path, re_path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import RedirectView
 from django.views.static import serve
+from dashboard.jwt_auth import jwt_or_staff_required
 from feedback.services import hash_ip
 from policies.chat_service import ask_smarth_ai, generate_deep_policy_breakdown
 from policies.ingestion.sync import run_scheme_sync
@@ -61,6 +62,7 @@ def chat_api(request):
     return JsonResponse(result)
 
 
+@jwt_or_staff_required
 def sync_schemes_api(request):
     if request.method == "GET":
         total = Policy.objects.count()
@@ -81,9 +83,6 @@ def sync_schemes_api(request):
 
     if request.method != "POST":
         return JsonResponse({"error": "GET or POST method required"}, status=405)
-
-    if not (request.user.is_authenticated and request.user.is_staff):
-        return JsonResponse({"error": "Unauthorized: Staff credentials required"}, status=403)
 
     try:
         data = json.loads(request.body.decode("utf-8"))
